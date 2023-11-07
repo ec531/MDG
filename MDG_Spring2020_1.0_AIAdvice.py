@@ -18,11 +18,11 @@ import pandas as pd
 from collections import Counter, defaultdict
 
 # Ensure that relative paths start from the same directory as this script
-_thisDir = os.path.dirname(os.path.abspath('/Users/ec531/Library/CloudStorage/Dropbox/ART-AI/Coding/Medical_Diagnosis_Game/MDGSpring20Task/'))
+_thisDir = os.path.dirname(os.path.abspath('X:/Psychology/ResearchProjects/JAHoffmann/PhDCremenAITeams/MDG/Medical_Diagnosis_Game')) 
 os.chdir(_thisDir)
 
 # Store info about the experiment session
-expName = 'MDG_Spring2020_1.0_AI_6'  # from the Builder filename that created this script
+expName = 'MDG_Spring2020_1.0_AIAdvice'  # from the Builder filename that created this script
 expInfo = {'participant':'','age':'','gender':''}
 dlg = gui.DlgFromDict(dictionary=expInfo, title=expName)
 if dlg.OK == False: core.quit()  # user pressed cancel
@@ -38,9 +38,13 @@ thisExp = data.ExperimentHandler(name=expName, version='',
     originPath=None,
     savePickle=True, saveWideText=True,
     dataFileName=filename)
+
 #save a log file for detail verbose info
 logFile = logging.LogFile(filename+'.log', level=logging.EXP)
 logging.console.setLevel(logging.WARNING)  # this outputs to the screen, not a file
+
+# Create a data list
+trial_data = []
 
 endExpNow = False  # flag for 'escape' or other condition => quit the exp
 
@@ -63,8 +67,6 @@ phase=1
 diagcond=1
 block=0
 score=0
-costs=''
-
 
 learningscore=''
 learning1score=''
@@ -106,8 +108,6 @@ diseases=[('Metalytis'), ('Zymosis'), ('Gwaronia'),('Descolada')]
 tests=[('MRI'), ('CAT'), ('XRAY'), ('LAB')]
 tests_copy=[('MRI'), ('CAT'), ('XRAY'), ('LAB')]
 locationsdummy=[1,2,3,4]
-costsdummy=[1,2,3]
-# EOIN
 np.random.shuffle(diseases)
 np.random.shuffle(tests)
 np.random.shuffle(locationsdummy)
@@ -135,143 +135,98 @@ Test1pics=''
 Test2pics=''
 Test3pics=''
 Test4pics=''
-GENpics=[('Images/fever.png'),('Images/rash.png'),('Images/migraine.png'),('Images/ache.png')]
-GENpics_copy=[('Images/fever.png'),('Images/rash.png'),('Images/migraine.png'),('Images/ache.png')]
+GENpics=[('X:/Psychology/ResearchProjects/JAHoffmann/PhDCremenAITeams/MDG/Medical_Diagnosis_Game/Images/fever.png'),('X:/Psychology/ResearchProjects/JAHoffmann/PhDCremenAITeams/MDG/Medical_Diagnosis_Game/Images/rash.png'),('X:/Psychology/ResearchProjects/JAHoffmann/PhDCremenAITeams/MDG/Medical_Diagnosis_Game/Images/migraine.png'),('X:/Psychology/ResearchProjects/JAHoffmann/PhDCremenAITeams/MDG/Medical_Diagnosis_Game/Images/ache.png')]
 np.random.shuffle(GENpics)
-MRIpics=[('Images/MRI - POS.png'),('Images/MRI - NEUT.png'),('Images/MRI - NEG.png')]
-LABpics=[('Images/LAB - POS.png'),('Images/LAB - NEUT.png'),('Images/LAB - NEG.png')]
-XRAYpics=[('Images/RAY - POS.png'),('Images/RAY - NEUT.png'),('Images/RAY - NEG.png')]
-CATpics=[('Images/CAT - POS.png'),('Images/CAT - NEUT.png'),('Images/CAT - NEG.png')]
-#EOIN
-symptoms=[('fever'), ('rash'), ('migraine'),('ache')]
+MRIpics=[('X:\Psychology\ResearchProjects\JAHoffmann\PhDCremenAITeams\MDG\Medical_Diagnosis_Game/Images/MRI - POS.png'),('X:\Psychology\ResearchProjects\JAHoffmann\PhDCremenAITeams\MDG\Medical_Diagnosis_Game/Images/MRI - NEUT.png'),('X:\Psychology\ResearchProjects\JAHoffmann\PhDCremenAITeams\MDG\Medical_Diagnosis_Game/Images/MRI - NEG.png')]
+LABpics=[('X:\Psychology\ResearchProjects\JAHoffmann\PhDCremenAITeams\MDG\Medical_Diagnosis_Game/Images/LAB - POS.png'),('X:\Psychology\ResearchProjects\JAHoffmann\PhDCremenAITeams\MDG\Medical_Diagnosis_Game/Images/LAB - NEUT.png'),('X:\Psychology\ResearchProjects\JAHoffmann\PhDCremenAITeams\MDG\Medical_Diagnosis_Game/Images/LAB - NEG.png')]
+XRAYpics=[('X:\Psychology\ResearchProjects\JAHoffmann\PhDCremenAITeams\MDG\Medical_Diagnosis_Game/Images/RAY - POS.png'),('X:\Psychology\ResearchProjects\JAHoffmann\PhDCremenAITeams\MDG\Medical_Diagnosis_Game/Images/RAY - NEUT.png'),('X:\Psychology\ResearchProjects\JAHoffmann\PhDCremenAITeams\MDG\Medical_Diagnosis_Game/Images/RAY - NEG.png')]
+CATpics=[('X:\Psychology\ResearchProjects\JAHoffmann\PhDCremenAITeams\MDG\Medical_Diagnosis_Game/Images/CAT - POS.png'),('X:\Psychology\ResearchProjects\JAHoffmann\PhDCremenAITeams\MDG\Medical_Diagnosis_Game/Images/CAT - NEUT.png'),('X:\Psychology\ResearchProjects\JAHoffmann\PhDCremenAITeams\MDG\Medical_Diagnosis_Game/Images/CAT - NEG.png')]
+symptoms=[('FEVER'), ('RASH'), ('MIGRAINE'),('ACHE')]
 
 # Mapping shuffled test names to original test names
 shuffled_to_original_tests = {original_test: shuffled_test for original_test, shuffled_test in zip(tests_copy, tests)}
 
-# Scale factor
-scale = 0.5
-
-# Modify image locations
-scaled_imagelocations = [(int(x * scale), int(y * scale)) for x, y in imagelocations]
-
-# Modify text locations
-scaled_textlocations = [(int(x * scale), int(y * scale)) for x, y in textlocations]
-
 if locationsdummy[0]==1:
     imagelocation1=[-730,310]
-    scaled_imagelocation1 = [int(x * scale) for x in imagelocation1]
     textlocation1=[-490,230]
-    scaled_textlocation1 = [int(x * scale) for x in textlocation1]
     shape1delay=shapedelaytimes[0]
     text1delay=textdelaytimes[0]
 elif locationsdummy[0]==2:
     imagelocation1=[730,310]
-    scaled_imagelocation1 = [int(x * scale) for x in imagelocation1]
     textlocation1=[490,230]
-    scaled_textlocation1 = [int(x * scale) for x in textlocation1]
     shape1delay=shapedelaytimes[1]
     text1delay=textdelaytimes[1]
 elif locationsdummy[0]==3:
     imagelocation1=[-730,-310]
-    scaled_imagelocation1 = [int(x * scale) for x in imagelocation1]
     textlocation1=[-490,-230]
-    scaled_textlocation1 = [int(x * scale) for x in textlocation1]
     shape1delay=shapedelaytimes[2]
     text1delay=textdelaytimes[2]
 else:
     imagelocation1=[730,-310]
-    scaled_imagelocation1 = [int(x * scale) for x in imagelocation1]
     textlocation1=[490,-230]
-    scaled_textlocation1 = [int(x * scale) for x in textlocation1]
     shape1delay=shapedelaytimes[3]
     text1delay=textdelaytimes[3]
 
 if locationsdummy[1]==1:
     imagelocation2=[-730,310]
-    scaled_imagelocation2 = [int(x * scale) for x in imagelocation2]
     textlocation2=[-490,230]
-    scaled_textlocation2 = [int(x * scale) for x in textlocation2]
     shape2delay=shapedelaytimes[0]
     text2delay=textdelaytimes[0]
 elif locationsdummy[1]==2:
     imagelocation2=[730,310]
-    # Modify image location
-    scaled_imagelocation2 = [int(x * scale) for x in imagelocation2]
     textlocation2=[490,230]
-    # Modify text location
-    scaled_textlocation2 = [int(x * scale) for x in textlocation2]
     shape2delay=shapedelaytimes[1]
     text2delay=textdelaytimes[1]
 elif locationsdummy[1]==3:
     imagelocation2=[-730,-310]
-    scaled_imagelocation2 = [int(x * scale) for x in imagelocation2]
     textlocation2=[-490,-230]
-    scaled_textlocation2 = [int(x * scale) for x in textlocation2]
     shape2delay=shapedelaytimes[2]
     text2delay=textdelaytimes[2]
 else:
     imagelocation2=[730,-310]
-    scaled_imagelocation2 = [int(x * scale) for x in imagelocation2]
     textlocation2=[490,-230]
-    scaled_textlocation2 = [int(x * scale) for x in textlocation2]
     shape2delay=shapedelaytimes[3]
     text2delay=textdelaytimes[3]
 
 if locationsdummy[2]==1:
     imagelocation3=[-730,310]
-    scaled_imagelocation3 = [int(x * scale) for x in imagelocation3]
     textlocation3=[-490,230]
-    scaled_textlocation3 = [int(x * scale) for x in textlocation3]
     shape3delay=shapedelaytimes[0]
     text3delay=textdelaytimes[0]
 elif locationsdummy[2]==2:
     imagelocation3=[730,310]
-    scaled_imagelocation3 = [int(x * scale) for x in imagelocation3]
     textlocation3=[490,230]
-    scaled_textlocation3 = [int(x * scale) for x in textlocation3]
     shape3delay=shapedelaytimes[1]
     text3delay=textdelaytimes[1]
 elif locationsdummy[2]==3:
     imagelocation3=[-730,-310]
-    scaled_imagelocation3 = [int(x * scale) for x in imagelocation3]
     textlocation3=[-490,-230]
-    scaled_textlocation3 = [int(x * scale) for x in textlocation3]
     shape3delay=shapedelaytimes[2]
     text3delay=textdelaytimes[2]
 else:
     imagelocation3=[730,-310]
-    scaled_imagelocation3 = [int(x * scale) for x in imagelocation3]
     textlocation3=[490,-230]
-    scaled_textlocation3 = [int(x * scale) for x in textlocation3]
     shape3delay=shapedelaytimes[3]
     text3delay=textdelaytimes[3]
 
 if locationsdummy[3]==1:
     imagelocation4=[-730,310]
-    scaled_imagelocation4 = [int(x * scale) for x in imagelocation4]
     textlocation4=[-490,230]
-    scaled_textlocation4 = [int(x * scale) for x in textlocation4]
     shape4delay=shapedelaytimes[0]
     text4delay=textdelaytimes[0]
 elif locationsdummy[3]==2:
     imagelocation4=[730,310]
-    scaled_imagelocation3 = [int(x * scale) for x in imagelocation3]
     textlocation4=[490,230]
-    scaled_textlocation4 = [int(x * scale) for x in textlocation4]
     shape4delay=shapedelaytimes[1]
     text4delay=textdelaytimes[1]
 elif locationsdummy[3]==3:
     imagelocation4=[-730,-310]
-    scaled_imagelocation3 = [int(x * scale) for x in imagelocation3]
     textlocation4=[-490,-230]
-    scaled_textlocation4 = [int(x * scale) for x in textlocation4]
     shape4delay=shapedelaytimes[2]
     text4delay=textdelaytimes[2]
 else:
     imagelocation4=[730,-310]
-    scaled_imagelocation3 = [int(x * scale) for x in imagelocation3]
     textlocation4=[490,-230]
-    scaled_textlocation4 = [int(x * scale) for x in textlocation4]
     shape4delay=shapedelaytimes[3]
     text4delay=textdelaytimes[3]
 
@@ -314,235 +269,142 @@ else:
 # Initialize components for Routine "instructions1"----------------------------------------------------------------------------------------------------------------------------------------------------------
 instructions1Clock = core.Clock()
 backgroundinst1 = visual.ImageStim(win=win, name='backgroundinst1',units='pix', 
-    image=u'/Users/ec531/Library/CloudStorage/Dropbox/ART-AI/Coding/Medical_Diagnosis_Game/MDGSpring20Task/Images/instructions1.png', mask=None,
+    image=u'X:\Psychology\ResearchProjects\JAHoffmann\PhDCremenAITeams\MDG\Medical_Diagnosis_Game/Images/instructionsbackground.png', mask=None,
     ori=0, pos=[0, 0], size=[1920,1080],
     color=[1,1,1], colorSpace='rgb', opacity=1,
     flipHoriz=False, flipVert=False,
-    texRes=128, interpolate=False, depth=0.0)
+    texRes=128, interpolate=True)
 
-# Rescale the image
-new_width = 1920 // 1.5
-new_height = 1080 // 1.5
-backgroundinst1.size = [new_width, new_height]
+instructions1text = visual.TextStim(win=win, name='Instructions1Text',
+    text=u'',
+    font=u'BatmanForeverAlternate',
+    units=u'pix', pos=(0, 0),height=40, wrapWidth=1200, color=u'#FCC700', colorSpace=u'rgb', opacity=1)
 
 # Initialize components for Routine "instructions2"----------------------------------------------------------------------------------------------------------------------------------------------------------
 instructions2Clock = core.Clock()
 backgroundinst2 = visual.ImageStim(win=win, name='backgroundinst2',units='pix', 
-    image=u'/Users/ec531/Library/CloudStorage/Dropbox/ART-AI/Coding/Medical_Diagnosis_Game/MDGSpring20Task/Images/instructionsbackground.png', mask=None,
-    ori=0, pos=[0, 0], size=[1280, 800],
-    color=[1,1,1], colorSpace='rgb', opacity=1,
-    flipHoriz=False, flipVert=False,
-    texRes=128, interpolate=True, depth=0.0)
-dplinst2 = visual.ImageStim(win=win, name='dplinst2',units='pix', 
-    image=u'/Users/ec531/Library/CloudStorage/Dropbox/ART-AI/Coding/Medical_Diagnosis_Game/MDGSpring20Task/Images/instructions2.png', mask=None,
+    image=u'X:\Psychology\ResearchProjects\JAHoffmann\PhDCremenAITeams\MDG\Medical_Diagnosis_Game/Images/instructionsbackground.png', mask=None,
     ori=0, pos=[0, 0], size=[1920,1080],
     color=[1,1,1], colorSpace='rgb', opacity=1,
     flipHoriz=False, flipVert=False,
-    texRes=128, interpolate=True, depth=-1.0)
-inst2pic = visual.ImageStim(win=win, name='inst2pic',units='pix', 
-    image=u'/Users/ec531/Library/CloudStorage/Dropbox/ART-AI/Coding/Medical_Diagnosis_Game/MDGSpring20Task/Images/instructions2.png', mask=None,
-    ori=0, pos=[0, 0], size=[1920,1080],
-    color=[1,1,1], colorSpace='rgb', opacity=1,
-    flipHoriz=False, flipVert=False,
-    texRes=128, interpolate=True, depth=-2.0)
+    texRes=128, interpolate=True, depth=1.0)
 
-# Rescale the image
-new_width = 1920 // 1.5
-new_height = 1080 // 1.5
-backgroundinst2.size = [new_width, new_height]
-dplinst2.size = [new_width, new_height]
-inst2pic.size = [new_width, new_height]
-
-# Initialize components for Routine "instructions3"----------------------------------------------------------------------------------------------------------------------------------------------------------
-instructions3Clock = core.Clock()
-instbackground3 = visual.ImageStim(win=win, name='instbackground3',units='pix', 
-    image=u'/Users/ec531/Library/CloudStorage/Dropbox/ART-AI/Coding/Medical_Diagnosis_Game/MDGSpring20Task/Images/instructionsbackground.png', mask=None,
-    ori=0, pos=[0, 0], size=[1920,1080],
-    color=[1,1,1], colorSpace='rgb', opacity=1,
-    flipHoriz=False, flipVert=False,
-    texRes=128, interpolate=True, depth=0.0)
-dplinst3 = visual.ImageStim(win=win, name='dplinst3',units='pix', 
-    image=u'/Users/ec531/Library/CloudStorage/Dropbox/ART-AI/Coding/Medical_Diagnosis_Game/MDGSpring20Task/Images/instructions3.png', mask=None,
-    ori=0, pos=[0, 0], size=[1920,1080],
-    color=[1,1,1], colorSpace='rgb', opacity=1,
-    flipHoriz=False, flipVert=False,
-    texRes=128, interpolate=True, depth=-1.0)
-inst3pic = visual.ImageStim(win=win, name='inst3pic',units='pix', 
-    image=u'/Users/ec531/Library/CloudStorage/Dropbox/ART-AI/Coding/Medical_Diagnosis_Game/MDGSpring20Task/Images/instructions3.png', mask=None,
-    ori=0, pos=[0, 0], size=[1920,1080],
-    color=[1,1,1], colorSpace='rgb', opacity=1,
-    flipHoriz=False, flipVert=False,
-    texRes=128, interpolate=True, depth=-2.0)
-
-# Rescale the image
-new_width = 1920 // 1.5
-new_height = 1080 // 1.5
-instbackground3.size = [new_width, new_height]
-dplinst3.size = [new_width, new_height]
-inst3pic.size = [new_width, new_height]
+instructions2text = visual.TextStim(win=win, name='Instructions2Text',
+    text=u'',
+    font=u'BatmanForeverAlternate',
+    units=u'pix', pos=(0, 0),height=30, wrapWidth=1200, color=u'#FCC700', colorSpace=u'rgb', opacity=1)
 
 #Initialize components for Routine "outcomes"
 outcomesClock = core.Clock()
 outcomesimage = visual.ImageStim(win=win, name='outcomesiamge',units='pix', 
-    image=u'/Users/ec531/Library/CloudStorage/Dropbox/ART-AI/Coding/Medical_Diagnosis_Game/MDGSpring20Task/Images/outcomes.png', mask=None,
+    image=u'X:\Psychology\ResearchProjects\JAHoffmann\PhDCremenAITeams\MDG\Medical_Diagnosis_Game/Images/outcomes.png', mask=None,
     ori=0, pos=[0, 0], size=[1920,1080],
     color=[1,1,1], colorSpace='rgb', opacity=1,
     flipHoriz=False, flipVert=False,
     texRes=128, interpolate=True, depth=0.0)
-
-# Rescale the image
-new_width = 1920 // 1.5
-new_height = 1080 // 1.5
-outcomesimage.size = [new_width, new_height]
 
 # Initialize components for Routine "instructions4.1"----------------------------------------------------------------------------------------------------------------------------------------------------------
 instructions4Clock = core.Clock()
 backgroundinst4 = visual.ImageStim(win=win, name='backgroundinst4',units='pix', 
-    image=u'/Users/ec531/Library/CloudStorage/Dropbox/ART-AI/Coding/Medical_Diagnosis_Game/MDGSpring20Task/Images/instructions4.1.png', mask=None,
+    image=u'X:\Psychology\ResearchProjects\JAHoffmann\PhDCremenAITeams\MDG\Medical_Diagnosis_Game/Images/instructions4.1.png', mask=None,
     ori=0, pos=[0, 0], size=[1920,1080],
     color=[1,1,1], colorSpace='rgb', opacity=1,
     flipHoriz=False, flipVert=False,
     texRes=128, interpolate=True, depth=0.0)
-
-# Rescale the image
-new_width = 1920 // 1.5
-new_height = 1080 // 1.5
-backgroundinst4.size = [new_width, new_height]
 
 # Initialize components for Routine "instructions4.2"----------------------------------------------------------------------------------------------------------------------------------------------------------
 instructions42Clock = core.Clock()
 backgroundinst42 = visual.ImageStim(win=win, name='backgroundinst4',units='pix', 
-    image=u'/Users/ec531/Library/CloudStorage/Dropbox/ART-AI/Coding/Medical_Diagnosis_Game/MDGSpring20Task/Images/instructions4.2.png', mask=None,
+    image=u'X:\Psychology\ResearchProjects\JAHoffmann\PhDCremenAITeams\MDG\Medical_Diagnosis_Game/Images/instructions4.2.png', mask=None,
     ori=0, pos=[0, 0], size=[1920,1080],
     color=[1,1,1], colorSpace='rgb', opacity=1,
     flipHoriz=False, flipVert=False,
     texRes=128, interpolate=True, depth=0.0)
 
-# Rescale the image
-new_width = 1920 // 1.5
-new_height = 1080 // 1.5
-backgroundinst42.size = [new_width, new_height]
 
-# Initialize components for Routine "instructions43"----------------------------------------------------------------------------------------------------------------------------------------------------------
+# Initialize components for Routine "instructions4.3"----------------------------------------------------------------------------------------------------------------------------------------------------------
 instructions43Clock = core.Clock()
 backgroundinst43 = visual.ImageStim(win=win, name='backgroundinst4',units='pix', 
-    image=u'/Users/ec531/Library/CloudStorage/Dropbox/ART-AI/Coding/Medical_Diagnosis_Game/MDGSpring20Task/Images/instructions4.3.png', mask=None,
+    image=u'X:\Psychology\ResearchProjects\JAHoffmann\PhDCremenAITeams\MDG\Medical_Diagnosis_Game/Images/instructions4.3.png', mask=None,
     ori=0, pos=[0, 0], size=[1920,1080],
     color=[1,1,1], colorSpace='rgb', opacity=1,
     flipHoriz=False, flipVert=False,
     texRes=128, interpolate=True, depth=0.0)
-
-# Rescale the image
-new_width = 1920 // 1.5
-new_height = 1080 // 1.5
-backgroundinst43.size = [new_width, new_height]
 
 # Initialize components for Routine "instructions5"----------------------------------------------------------------------------------------------------------------------------------------------------------
 instructions5Clock = core.Clock()
 backgroundinst5 = visual.ImageStim(win=win, name='backgroundinst5',units='pix', 
-    image=u'/Users/ec531/Library/CloudStorage/Dropbox/ART-AI/Coding/Medical_Diagnosis_Game/MDGSpring20Task/Images/instructionsbackground.png', mask=None,
+    image=u'X:\Psychology\ResearchProjects\JAHoffmann\PhDCremenAITeams\MDG\Medical_Diagnosis_Game/Images/instructionsbackground.png', mask=None,
     ori=0, pos=[0, 0], size=[1920,1080],
     color=[1,1,1], colorSpace='rgb', opacity=1,
     flipHoriz=False, flipVert=False,
     texRes=128, interpolate=True, depth=0.0)
 dplinst5 = visual.ImageStim(win=win, name='dplinst5',units='pix', 
-    image=u'/Users/ec531/Library/CloudStorage/Dropbox/ART-AI/Coding/Medical_Diagnosis_Game/MDGSpring20Task/Images/instructions5.png', mask=None,
+    image=u'X:\Psychology\ResearchProjects\JAHoffmann\PhDCremenAITeams\MDG\Medical_Diagnosis_Game/Images/instructions5.png', mask=None,
     ori=0, pos=[0, 0], size=[1920,1080],
     color=[1,1,1], colorSpace='rgb', opacity=1,
     flipHoriz=False, flipVert=False,
     texRes=128, interpolate=True, depth=-1.0)
 inst5pic = visual.ImageStim(win=win, name='inst5pic',units='pix', 
-    image=u'/Users/ec531/Library/CloudStorage/Dropbox/ART-AI/Coding/Medical_Diagnosis_Game/MDGSpring20Task/Images/instructions5.png', mask=None,
+    image=u'X:\Psychology\ResearchProjects\JAHoffmann\PhDCremenAITeams\MDG\Medical_Diagnosis_Game/Images/instructions5.png', mask=None,
     ori=0, pos=[0, 0], size=[1920,1080],
     color=[1,1,1], colorSpace='rgb', opacity=1,
     flipHoriz=False, flipVert=False,
     texRes=128, interpolate=True, depth=-2.0)
 
-# Rescale the image
-new_width = 1920 // 1.5
-new_height = 1080 // 1.5
-backgroundinst5.size = [new_width, new_height]
-dplinst5.size = [new_width, new_height]
-inst5pic.size = [new_width, new_height]
-
 # Initialize components for Routine "instructions6"----------------------------------------------------------------------------------------------------------------------------------------------------------
 instructions6Clock = core.Clock()
 backgroundinst6 = visual.ImageStim(win=win, name='backgroundinst6',units='pix', 
-    image=u'/Users/ec531/Library/CloudStorage/Dropbox/ART-AI/Coding/Medical_Diagnosis_Game/MDGSpring20Task/Images/instructions6.png', mask=None,
+    image=u'X:\Psychology\ResearchProjects\JAHoffmann\PhDCremenAITeams\MDG\Medical_Diagnosis_Game/Images/instructions6.png', mask=None,
     ori=0, pos=[0, 0], size=[1920,1080],
     color=[1,1,1], colorSpace='rgb', opacity=1,
     flipHoriz=False, flipVert=False,
     texRes=128, interpolate=True, depth=0.0)
-
-# Rescale the image
-new_width = 1920 // 1.5
-new_height = 1080 // 1.5
-backgroundinst6.size = [new_width, new_height]
 
 # Initialize components for Routine "instructions7"----------------------------------------------------------------------------------------------------------------------------------------------------------
 instructions7Clock = core.Clock()
 instr7pic = visual.ImageStim(win=win, name='instr7pic',units='pix', 
-    image=u'/Users/ec531/Library/CloudStorage/Dropbox/ART-AI/Coding/Medical_Diagnosis_Game/MDGSpring20Task/Images/instructions7.png', mask=None,
+    image=u'X:\Psychology\ResearchProjects\JAHoffmann\PhDCremenAITeams\MDG\Medical_Diagnosis_Game/Images/instructions7.png', mask=None,
     ori=0, pos=[0, 0], size=[1920,1080],
     color=[1,1,1], colorSpace='rgb', opacity=1,
     flipHoriz=False, flipVert=False,
     texRes=128, interpolate=True, depth=0.0)
 
-# Rescale the image
-new_width = 1920 // 1.5
-new_height = 1080 // 1.5
-instr7pic.size = [new_width, new_height]
-
 # Initialize components for Routine "instructions8"----------------------------------------------------------------------------------------------------------------------------------------------------------
 instructions8Clock = core.Clock()
 backgroundinst8 = visual.ImageStim(win=win, name='backgroundinst8',units='pix', 
-    image=u'/Users/ec531/Library/CloudStorage/Dropbox/ART-AI/Coding/Medical_Diagnosis_Game/MDGSpring20Task/Images/instructionsbackground.png', mask=None,
+    image=u'X:\Psychology\ResearchProjects\JAHoffmann\PhDCremenAITeams\MDG\Medical_Diagnosis_Game/Images/instructionsbackground.png', mask=None,
     ori=0, pos=[0, 0], size=[1920,1080],
     color=[1,1,1], colorSpace='rgb', opacity=1,
     flipHoriz=False, flipVert=False,
     texRes=128, interpolate=True, depth=0.0)
 dplinst8 = visual.ImageStim(win=win, name='dplinst8',units='pix', 
-    image=u'/Users/ec531/Library/CloudStorage/Dropbox/ART-AI/Coding/Medical_Diagnosis_Game/MDGSpring20Task/Images/instructions8.png', mask=None,
+    image=u'X:\Psychology\ResearchProjects\JAHoffmann\PhDCremenAITeams\MDG\Medical_Diagnosis_Game/Images/instructions8.png', mask=None,
     ori=0, pos=[0, 0], size=[1920,1080],
     color=[1,1,1], colorSpace='rgb', opacity=1,
     flipHoriz=False, flipVert=False,
     texRes=128, interpolate=True, depth=-1.0)
 inst8pic = visual.ImageStim(win=win, name='inst8pic',units='pix', 
-    image=u'/Users/ec531/Library/CloudStorage/Dropbox/ART-AI/Coding/Medical_Diagnosis_Game/MDGSpring20Task/Images/instructions8.png', mask=None,
+    image=u'X:\Psychology\ResearchProjects\JAHoffmann\PhDCremenAITeams\MDG\Medical_Diagnosis_Game/Images/instructions8.png', mask=None,
     ori=0, pos=[0, 0], size=[1920,1080],
     color=[1,1,1], colorSpace='rgb', opacity=1,
     flipHoriz=False, flipVert=False,
     texRes=128, interpolate=True, depth=-2.0)
 
-# Rescale the image
-new_width = 1920 // 1.5
-new_height = 1080 // 1.5
-backgroundinst8.size = [new_width, new_height]
-dplinst8.size = [new_width, new_height]
-inst8pic.size = [new_width, new_height]
-
 # Initialize components for Routine "start"----------------------------------------------------------------------------------------------------------------------------------------------------------
 startClock = core.Clock()
 startglow = visual.ImageStim(win=win, name='startglow',units='pix', 
-    image=u'/Users/ec531/Library/CloudStorage/Dropbox/ART-AI/Coding/Medical_Diagnosis_Game/MDGSpring20Task/Images/startglow.png', mask=None,
+    image=u'X:\Psychology\ResearchProjects\JAHoffmann\PhDCremenAITeams\MDG\Medical_Diagnosis_Game/Images/startglow.png', mask=None,
     ori=0, pos=[0, 0], size=[1920,1080],
     color=[1,1,1], colorSpace='rgb', opacity=1,
     flipHoriz=False, flipVert=False,
     texRes=128, interpolate=True, depth=-1.0)
 startpic = visual.ImageStim(win=win, name='startpic',units='pix', 
-    image=u'/Users/ec531/Library/CloudStorage/Dropbox/ART-AI/Coding/Medical_Diagnosis_Game/MDGSpring20Task/Images/start.png', mask=None,
+    image=u'X:\Psychology\ResearchProjects\JAHoffmann\PhDCremenAITeams\MDG\Medical_Diagnosis_Game/Images/start.png', mask=None,
     ori=0, pos=[0, 0], size=[1920,1080],
     color=[1,1,1], colorSpace='rgb', opacity=1,
     flipHoriz=False, flipVert=False,
     texRes=128, interpolate=True, depth=-2.0)
-# Original position and height
-startcountdown_original_position = [550, -50]
-startcountdown_original_height = 500
-# Scale factor
-scale_score = 0.5
-# Modify position and height
-startcountdown_scaled_position = [int(x * scale_score) for x in startcountdown_original_position]
-startcountdown_scaled_height = int(startcountdown_original_height * scale_score)
 startcountdown = visual.TextStim(win=win, ori=0, name='startcountdown',
     text=u'3',
     font=u'BatmanForeverAlternate',
@@ -550,48 +412,27 @@ startcountdown = visual.TextStim(win=win, ori=0, name='startcountdown',
     color=u'#01FFFD', colorSpace=u'rgb', opacity=1,
     depth=-6.0)
 
-# Rescale the image
-new_width = 1920 // 1.5
-new_height = 1080 // 1.5
-startglow.size = [new_width, new_height]
-startpic.size = [new_width, new_height]
-startcountdown.size = [new_width, new_height]
-
 # Initialize components for Routine "loading"----------------------------------------------------------------------------------------------------------------------------------------------------------
 loadingClock = core.Clock()
 background = visual.ImageStim(win=win, name='background',units='pix', 
-    image=u'/Users/ec531/Library/CloudStorage/Dropbox/ART-AI/Coding/Medical_Diagnosis_Game/MDGSpring20Task/Images/TrialBackground.png', mask=None,
+    image=u'X:\Psychology\ResearchProjects\JAHoffmann\PhDCremenAITeams\MDG\Medical_Diagnosis_Game/Images/TrialBackground.png', mask=None,
     ori=0, pos=[0, 0], size=[1920,1080],
     color=[1,1,1], colorSpace='rgb', opacity=1,
     flipHoriz=False, flipVert=False,
     texRes=128, interpolate=True, depth=0.0)
 loadingpic = visual.ImageStim(win=win, name='loadingpic',units='pix', 
-    image=u'/Users/ec531/Library/CloudStorage/Dropbox/ART-AI/Coding/Medical_Diagnosis_Game/MDGSpring20Task/Images/loading.png', mask=None,
+    image=u'X:\Psychology\ResearchProjects\JAHoffmann\PhDCremenAITeams\MDG\Medical_Diagnosis_Game/Images/loading.png', mask=None,
     ori=0, pos=[0, 0], size=[1920,1080],
     color=[1,1,1], colorSpace='rgb', opacity=1,
     flipHoriz=False, flipVert=False,
     texRes=128, interpolate=True, depth=-1.0)
 
-# Rescale the image
-new_width = 1920 // 1.5
-new_height = 1080 // 1.5
-background.size = [new_width, new_height]
-loadingpic.size = [new_width, new_height]
-
 # Initialize components for Routine "trial"----------------------------------------------------------------------------------------------------------------------------------------------------------
 mouse = event.Mouse(win=win)
-# Original position and height
-ScoreText_original_position = [0, -460]
-ScoreText_original_height = 50
-# Scale factor
-scale_score = 0.67
-# Modify position and height
-ScoreText_scaled_position = [int(x * scale_score) for x in ScoreText_original_position]
-ScoreText_scaled_height = int(ScoreText_original_height * scale_score)
 ScoreText=visual.TextStim(win=win, ori=0, name='ScoreText',
     text=u'$%i' %(score),
     font=u'BatmanForeverAlternate',
-    units=u'pix', pos=ScoreText_scaled_position, height=ScoreText_scaled_height,wrapWidth=None,
+    units=u'pix', pos=[0, -460], height=50,wrapWidth=None,
     color=u'#FCC700', colorSpace=u'rgb', opacity=1,
     depth=-6.0)
 click1=0
@@ -601,13 +442,13 @@ click4=0
 totalclick=0
 trialClock = core.Clock()
 learningbackground = visual.ImageStim(win=win, name='learningbackground',units='pix', 
-    image=u'/Users/ec531/Library/CloudStorage/Dropbox/ART-AI/Coding/Medical_Diagnosis_Game/MDGSpring20Task/Images/learningbackground.png', mask=None,
+    image=u'X:\Psychology\ResearchProjects\JAHoffmann\PhDCremenAITeams\MDG\Medical_Diagnosis_Game/Images/learningbackground.png', mask=None,
     ori=0, pos=[0, 0], size=[1920,1080],
     color=[1,1,1], colorSpace='rgb', opacity=1,
     flipHoriz=False, flipVert=False,
     texRes=128, interpolate=True, depth=0.0)
 trialbackground = visual.ImageStim(win=win, name='trialbackground',units='pix', 
-    image=u'/Users/ec531/Library/CloudStorage/Dropbox/ART-AI/Coding/Medical_Diagnosis_Game/MDGSpring20Task/Images/TrialBackground.png', mask=None,
+    image=u'X:\Psychology\ResearchProjects\JAHoffmann\PhDCremenAITeams\MDG\Medical_Diagnosis_Game/Images/TrialBackground.png', mask=None,
     ori=0, pos=[0, 0], size=[1920,1080],
     color=[1,1,1], colorSpace='rgb', opacity=1,
     flipHoriz=False, flipVert=False,
@@ -616,21 +457,14 @@ diagnosis = visual.RatingScale(win=win, name='diagnosis', acceptPreText='SUBMIT'
     textColor='#00B7B5', marker=u'triangle', markerColor='#FCC700', markerExpansion=0, 
     size=0.87, textFont='BatmanForeverAlternate', pos=[0.0, 30.0], choices=[diseases[0], diseases[1], diseases[2],diseases[3]], 
     tickHeight=-1,depth=-1.0)
-# Apply scaling to the original image position
-scale_2 = 0.68
-original_image_position = [0, 460]
-scaled_image_position = [int(x * scale_2) for x in original_image_position]
-# Create the GenImage object with the scaled position
 GenImage=visual.ImageStim(win=win, name='GenImage', units=u'pix', 
     image=GENpics[0],mask=None,
-    ori=0, pos=[scaled_image_position], size = [288, 72],
+    ori=0, pos=[0,460], size = [288, 72],
     color=[1,1,1], colorSpace=u'rgb', opacity=1,
     texRes=128, interpolate=False, depth=-11.0)
-# Modify image location
-scaled_imagelocation1 = [int(x * scale) for x in imagelocation1]
 Test1Image=visual.ImageStim(win=win, name='TLImage',units=u'pix', 
     image=Test1pics[0], mask=None,
-    ori=0, pos=scaled_imagelocation1, size=[310, 310],
+    ori=0, pos=imagelocation1, size=[310, 310],
     color=[1,1,1], colorSpace=u'rgb', opacity=0,
     texRes=128, interpolate=False, depth=-10.0)
 Test1Text=visual.TextStim(win=win, ori=0, name='TLText',
@@ -639,11 +473,9 @@ Test1Text=visual.TextStim(win=win, ori=0, name='TLText',
     units=u'pix', pos=textlocation1, height=35,wrapWidth=None,
     color=u'#004646', colorSpace=u'rgb', opacity=1,
     depth=-6.0)
-# Modify image location
-scaled_imagelocation2 = [int(x * scale) for x in imagelocation2]
 Test2Image=visual.ImageStim(win=win, name='TLImage',units=u'pix', 
     image=Test2pics[0], mask=None,
-    ori=0, pos=scaled_imagelocation2, size=[310, 310],
+    ori=0, pos=imagelocation2, size=[310, 310],
     color=[1,1,1], colorSpace=u'rgb', opacity=0,
     texRes=128, interpolate=False, depth=-10.0)
 Test2Text=visual.TextStim(win=win, ori=0, name='TRText',
@@ -652,11 +484,9 @@ Test2Text=visual.TextStim(win=win, ori=0, name='TRText',
     units=u'pix', pos=textlocation2, height=35,wrapWidth=None,
     color=u'#004646', colorSpace=u'rgb', opacity=1,
     depth=-7.0)
-# Modify image location
-scaled_imagelocation3 = [int(x * scale) for x in imagelocation3]
 Test3Image=visual.ImageStim(win=win, name='TLImage',units=u'pix', 
     image=Test3pics[0], mask=None,
-    ori=0, pos=scaled_imagelocation3, size=[310, 310],
+    ori=0, pos=imagelocation3, size=[310, 310],
     color=[1,1,1], colorSpace=u'rgb', opacity=0,
     texRes=128, interpolate=False, depth=-10.0)
 Test3Text=visual.TextStim(win=win, ori=0, name='BLText',
@@ -665,11 +495,9 @@ Test3Text=visual.TextStim(win=win, ori=0, name='BLText',
     units=u'pix', pos=textlocation3, height=35,wrapWidth=None,
     color=u'#004646', colorSpace=u'rgb', opacity=1,
     depth=-8.0)
-# Modify image location
-scaled_imagelocation4 = [int(x * scale) for x in imagelocation4]
 Test4Image=visual.ImageStim(win=win, name='TLImage',units=u'pix', 
     image=Test4pics[0], mask=None,
-    ori=0, pos=scaled_imagelocation4, size=[310, 310],
+    ori=0, pos=imagelocation4, size=[310, 310],
     color=[1,1,1], colorSpace=u'rgb', opacity=0,
     texRes=128, interpolate=False, depth=-10.0)
 Test4Text=visual.TextStim(win=win, ori=0, name='BRText',
@@ -678,21 +506,21 @@ Test4Text=visual.TextStim(win=win, ori=0, name='BRText',
     units=u'pix', pos=textlocation4, height=35,wrapWidth=None,
     color=u'#004646', colorSpace=u'rgb', opacity=1,
     depth=-9.0)
-Test1Shape=visual.Circle(win, pos=scaled_imagelocation1, fillColor=u'#004646', lineColor=u'#004646',
+Test1Shape=visual.Circle(win, pos=imagelocation1, fillColor=u'#004646', lineColor=u'#004646',
     radius=150, units='pix')
-Test2Shape=visual.Circle(win, pos=scaled_imagelocation2, fillColor=u'#004646', lineColor=u'#004646',
+Test2Shape=visual.Circle(win, pos=imagelocation2, fillColor=u'#004646', lineColor=u'#004646',
     radius=150, units='pix')
-Test3Shape=visual.Circle(win, pos=scaled_imagelocation3, fillColor=u'#004646', lineColor=u'#004646',
+Test3Shape=visual.Circle(win, pos=imagelocation3, fillColor=u'#004646', lineColor=u'#004646',
     radius=150, units='pix')
-Test4Shape=visual.Circle(win, pos=scaled_imagelocation4, fillColor=u'#004646', lineColor=u'#004646',
+Test4Shape=visual.Circle(win, pos=imagelocation4, fillColor=u'#004646', lineColor=u'#004646',
     radius=150, units='pix')
-Random1Shape=visual.Circle(win, pos=scaled_imagelocation1, fillColor=u'#FCC700', lineColor=u'#FCC700',
+Random1Shape=visual.Circle(win, pos=imagelocation1, fillColor=u'#FCC700', lineColor=u'#FCC700',
     radius=150, units='pix')
-Random2Shape=visual.Circle(win, pos=scaled_imagelocation2, fillColor=u'#FCC700', lineColor=u'#FCC700',
+Random2Shape=visual.Circle(win, pos=imagelocation2, fillColor=u'#FCC700', lineColor=u'#FCC700',
     radius=150, units='pix')
-Random3Shape=visual.Circle(win, pos=scaled_imagelocation3, fillColor=u'#FCC700', lineColor=u'#FCC700',
+Random3Shape=visual.Circle(win, pos=imagelocation3, fillColor=u'#FCC700', lineColor=u'#FCC700',
     radius=150, units='pix')
-Random4Shape=visual.Circle(win, pos=scaled_imagelocation4, fillColor=u'#FCC700', lineColor=u'#FCC700',
+Random4Shape=visual.Circle(win, pos=imagelocation4, fillColor=u'#FCC700', lineColor=u'#FCC700',
     radius=150, units='pix')
 Cost1Text=visual.TextStim(win=win, ori=0, name='Cost1Text',
     text=u'',
@@ -719,43 +547,25 @@ Cost4Text=visual.TextStim(win=win, ori=0, name='Cost4Text',
     color=u'#004646', colorSpace=u'rgb', opacity=1,
     depth=-6.0)
 
-# Rescale the image
-new_width = 1920 // 1.5
-new_height = 1080 // 1.5
-new_width_2 = 288 // 1.5
-new_height_2 = 72 // 1.5
-scaled_position_GenImage = [int(x * scale) for x in GenImage.pos]
-new_width_3 = 310 // 1.5
-new_height_3 = 310 // 1.5
-new_radius = 150 // 1.5
-learningbackground.size = [new_width, new_height]
-trialbackground.size = [new_width, new_height]
-GenImage.size = [new_width_2, new_height_2]
-Test1Image.size = [new_width_3, new_height_3]
-Test2Image.size = [new_width_3, new_height_3]
-Test3Image.size = [new_width_3, new_height_3]
-Test4Image.size = [new_width_3, new_height_3]
-Test1Shape.radius = [new_radius]
-Test2Shape.radius = [new_radius]
-Test3Shape.radius = [new_radius]
-Test4Shape.radius = [new_radius]
-Random1Shape.radius = [new_radius]
-Random2Shape.radius = [new_radius]
-Random3Shape.radius = [new_radius]
-Random4Shape.radius = [new_radius]
+# Initialize components for Routine "AIinstructions"----------------------------------------------------------------------------------------------------------------------------------------------------------
+AIinstructionsClock = core.Clock()
+backgroundinst2 = visual.ImageStim(win=win, name='AIinstructions',units='pix', 
+    image=u'X:\Psychology\ResearchProjects\JAHoffmann\PhDCremenAITeams\MDG\Medical_Diagnosis_Game/Images/instructionsbackground.png', mask=None,
+    ori=0, pos=[0, 0], size=[1920,1080],
+    color=[1,1,1], colorSpace='rgb', opacity=1,
+    flipHoriz=False, flipVert=False,
+    texRes=128, interpolate=True, depth=1.0)
 
-# Eoin
-# AI prompt to user
-PromptTextAI = visual.TextStim(win=win, name='PromptTextAI',
+AIinstructionstext = visual.TextStim(win=win, name='AIinstructionsText',
     text=u'',
     font=u'BatmanForeverAlternate',
-    units=u'pix', pos=(0, 175),height=15,wrapWidth=None, color=u'#FCC700', colorSpace=u'rgb', opacity=1,
-    depth=-6.0)
+    units=u'pix', pos=(0, 0),height=30, wrapWidth=1200, color=u'#FCC700', colorSpace=u'rgb', opacity=1)
 
+# AI prompt to user
 PromptTextAdvice = visual.TextStim(win=win, name='PromptTextAdvice',
     text=u'',
     font=u'BatmanForeverAlternate',
-    units=u'pix', pos=(0, 150),height=15,wrapWidth=None, color=u'#FCC700', colorSpace=u'rgb', opacity=1,
+    units=u'pix', pos=(0, 220),height=20,wrapWidth=700, color=u'#FCC700', colorSpace=u'rgb', opacity=1,
     depth=-6.0)
 
 # Initialize components for Routine "feedback"----------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -763,107 +573,51 @@ feedbackClock = core.Clock()
 Correct=''
 DiseaseState=''
 backgroundfeedback = visual.ImageStim(win=win, name='backgroundfeedback',units='pix', 
-    image=u'/Users/ec531/Library/CloudStorage/Dropbox/ART-AI/Coding/Medical_Diagnosis_Game/MDGSpring20Task/Images/TrialBackground.png', mask=None,
+    image=u'X:\Psychology\ResearchProjects\JAHoffmann\PhDCremenAITeams\MDG\Medical_Diagnosis_Game/Images/TrialBackground.png', mask=None,
     ori=0, pos=[0, 0], size=[1920,1080],
     color=[1,1,1], colorSpace='rgb', opacity=1,
     flipHoriz=False, flipVert=False,
     texRes=128, interpolate=True, depth=0.0)
-# Original position and height
-Result_original_position = [0, -50]
-Result_original_height = 25
-# Scale factor
-scale = 0.5
-# Modify position and height
-Result_scaled_position = [int(x * scale) for x in Result_original_position]
-Result_scaled_height = int(Result_original_height * scale)
 Result=visual.TextStim(win=win, ori=0, name='Result',
     text=u'Result:',
     font=u'BatmanForeverAlternate',
-    units=u'pix', pos=Result_scaled_position, height=Result_scaled_height, wrapWidth=1280,
+    units=u'pix', pos=[0, -50], height=25,wrapWidth=1280,
     color=u'white', colorSpace=u'rgb', opacity=1,
     depth=-1.0)
-# Original position and height
-Correct_Incorrect_original_position = [0, -90]
-Correct_Incorrect_original_height = 70
-# Scale factor
-scale = 0.5
-# Modify position and height
-Correct_Incorrect_scaled_position = [int(x * scale) for x in Correct_Incorrect_original_position]
-Correct_Incorrect_scaled_height = int(Correct_Incorrect_original_height * scale)
 Correct_Incorrect=visual.TextStim(win=win, ori=0, name='Correct_Incorrect',
     text=u'Correct!',
     font=u'BatmanForeverAlternate',
-    units=u'pix', pos=Correct_Incorrect_scaled_position, height=Correct_Incorrect_scaled_height,wrapWidth=None,
+    units=u'pix', pos=[0, -90], height=70,wrapWidth=None,
     color=u'#01FFFD', colorSpace=u'rgb', opacity=1,
     depth=0.0)
-# Original position and height
-YourResponseText_original_position = [-180, 80]
-YourResponseText_original_height = 25
-# Scale factor
-scale = 0.5
-# Modify position and height
-YourResponseText_scaled_position = [int(x * scale) for x in YourResponseText_original_position]
-YourResponseText_scaled_height = int(YourResponseText_original_height * scale)
 YourResponseText=visual.TextStim(win=win, ori=0, name='YourResponseText',
     text=u'Your diagnosis:',
     font=u'BatmanForeverAlternate',
-    units=u'pix', pos=YourResponseText_scaled_position, height=YourResponseText_scaled_height,wrapWidth=1280,
+    units=u'pix', pos=[-180, 80], height=25,wrapWidth=1280,
     color=u'white', colorSpace=u'rgb', opacity=1,
     depth=-1.0)
-# Original position and height
-YourResponse_original_position = [-180, 50]
-YourResponse_original_height = 40
-# Scale factor
-scale = 0.5
-# Modify position and height
-YourResponse_scaled_position = [int(x * scale) for x in YourResponse_original_position]
-YourResponse_scaled_height = int(YourResponse_original_height * scale)
 YourResponse=visual.TextStim(win=win, ori=0, name='YourResponse',
     text=u'',
     font=u'BatmanForeverAlternate',
-    units=u'pix', pos=YourResponse_scaled_position, height=YourResponse_scaled_height, wrapWidth=1280,
+    units=u'pix', pos=[-180, 50], height=40,wrapWidth=1280,
     color=u'#01FFFD', colorSpace=u'rgb', opacity=1,
     depth=-1.0)
-# Original position and height
-AnswerWas_original_position = [180, 80]
-AnswerWas_original_height = 25
-# Scale factor
-scale = 0.5
-# Modify position and height
-AnswerWas_scaled_position = [int(x * scale) for x in AnswerWas_original_position]
-AnswerWas_scaled_height = int(AnswerWas_original_height * scale)
 AnswerWas=visual.TextStim(win=win, ori=0, name='AnswerWas',
     text=u'Patient:',
     font=u'BatmanForeverAlternate',
-    units=u'pix', pos=AnswerWas_scaled_position, height=AnswerWas_scaled_height, wrapWidth=1280,
+    units=u'pix', pos=[180, 80], height=25,wrapWidth=1280,
     color=u'white', colorSpace=u'rgb', opacity=1,
     depth=-1.0)
-# Original position and height
-State_original_position = [180, 50]
-State_original_height = 40
-# Scale factor
-scale = 0.5
-# Modify position and height
-State_scaled_position = [int(x * scale) for x in State_original_position]
-State_scaled_height = int(State_original_height * scale)
 State=visual.TextStim(win=win, ori=0, name='State',
     text=u'disease',
     font=u'BatmanForeverAlternate',
-    units=u'pix', pos=State_scaled_position, height=State_scaled_height, wrapWidth=1280,
+    units=u'pix', pos=[180, 50], height=40,wrapWidth=1280,
     color=u'#01FFFD', colorSpace=u'rgb', opacity=1,
     depth=-1.0)
-# Original position and height
-Press_original_position = [0, -360]
-Press_original_height = 30
-# Scale factor
-scale = 0.5
-# Modify position and height
-Press_scaled_position = [int(x * scale) for x in Press_original_position]
-Press_scaled_height = int(Press_original_height * scale)
 Press=visual.TextStim(win=win, ori=0, name='Press',
     text=u'Press the SPACEBAR to continue.',
     font=u'BatmanForeverAlternate',
-    units=u'pix', pos=Press_scaled_position, height=Press_scaled_height,wrapWidth=1280,
+    units=u'pix', pos=[0, -240], height=30,wrapWidth=1280,
     color=u'white', colorSpace=u'rgb', opacity=1,
     depth=-2.0)
 
@@ -879,338 +633,185 @@ timeupText = visual.TextStim(win=win, ori=0, name='Press',
 #Initialize componenets for Routine "learningphaseend"
 learningendClock= core.Clock()
 learningphaseend = visual.ImageStim(win=win, name='background1phase2',units='pix', 
-    image=u'/Users/ec531/Library/CloudStorage/Dropbox/ART-AI/Coding/Medical_Diagnosis_Game/MDGSpring20Task/Images/learningphaseend.png', mask=None,
+    image=u'X:\Psychology\ResearchProjects\JAHoffmann\PhDCremenAITeams\MDG\Medical_Diagnosis_Game/Images/learningphaseend.png', mask=None,
     ori=0, pos=[0, 0], size=[1920,1080],
     color=[1,1,1], colorSpace='rgb', opacity=1,
     flipHoriz=False, flipVert=False,
     texRes=128, interpolate=True, depth=0.0)
-# Rescale the image
-new_width = 1920 // 1.5
-new_height = 1080 // 1.5
-learningphaseend.size = [new_width, new_height]
 
-#Initialize componenets for Routine "learningphasecompleted"
-learningendClock= core.Clock()
-learningphasecompleted = visual.ImageStim(win=win, name='background1phase2',units='pix', 
-    image=u'/Users/ec531/Library/CloudStorage/Dropbox/ART-AI/Coding/Medical_Diagnosis_Game/MDGSpring20Task/Images/learningphaseend.png', mask=None,
+#Initialize componenets for Routine "btwrounds"
+instructionsbtwroundsClock = core.Clock()
+instructionsbtwrounds = visual.ImageStim(win=win, name='instructionsbtwrounds',units='pix', 
+    image=u'X:\Psychology\ResearchProjects\JAHoffmann\PhDCremenAITeams\MDG\Medical_Diagnosis_Game/Images/instructionsbtwrounds.png', mask=None,
     ori=0, pos=[0, 0], size=[1920,1080],
     color=[1,1,1], colorSpace='rgb', opacity=1,
     flipHoriz=False, flipVert=False,
     texRes=128, interpolate=True, depth=0.0)
-# Rescale the image
-new_width = 1920 // 1.5
-new_height = 1080 // 1.5
-learningphasecompleted.size = [new_width, new_height]
 
 #Initialize components for Routine "phase2instr1"
 phase2instr1Clock = core.Clock()
 background1phase2 = visual.ImageStim(win=win, name='background1phase2',units='pix', 
-    image=u'/Users/ec531/Library/CloudStorage/Dropbox/ART-AI/Coding/Medical_Diagnosis_Game/MDGSpring20Task/Images/instructions2phase2.png', mask=None,
+    image=u'X:\Psychology\ResearchProjects\JAHoffmann\PhDCremenAITeams\MDG\Medical_Diagnosis_Game/Images/instructions2phase2.png', mask=None,
     ori=0, pos=[0, 0], size=[1920,1080],
     color=[1,1,1], colorSpace='rgb', opacity=1,
     flipHoriz=False, flipVert=False,
     texRes=128, interpolate=True, depth=0.0)
-# Rescale the image
-new_width = 1920 // 1.5
-new_height = 1080 // 1.5
-background1phase2.size = [new_width, new_height]
-# Original position and height
-pricetext1_original_position = [-490,-230]
-pricetext1_original_height = 35
-# Scale factor
-scale = 0.5
-# Modify position and height
-pricetext1_scaled_position = [int(x * scale) for x in pricetext1_original_position]
-pricetext1_scaled_height = int(pricetext1_original_height * scale)
 pricetext1 = visual.TextStim(win=win, ori=0, name='BLText',
     text=u'\n\n\n$250',
     font=u'BatmanForeverAlternate',
-    units=u'pix', pos=pricetext1_scaled_position, height=pricetext1_scaled_height,wrapWidth=None,
+    units=u'pix', pos=[-490,-230], height=35,wrapWidth=None,
     color=u'#004646', colorSpace=u'rgb', opacity=1,
     depth=-8.0)
-# Original position and height
-pricetext2_original_position = [-490,-230]
-pricetext2_original_height = 35
-# Scale factor
-scale = 0.5
-# Modify position and height
-pricetext2_scaled_position = [int(x * scale) for x in pricetext2_original_position]
-pricetext2_scaled_height = int(pricetext2_original_height * scale)
 pricetext2 = visual.TextStim(win=win, ori=0, name='BLText',
     text=u'\n\n\n2.5 s',
     font=u'BatmanForeverAlternate',
     units=u'pix', pos=[490,-230], height=35,wrapWidth=None,
     color=u'#004646', colorSpace=u'rgb', opacity=1,
     depth=-8.0)
+
 #Initialize component for Routine "phase2instr2"
 phase2instr2Clock = core.Clock()
 background2phase2 = visual.ImageStim(win=win, name='background1phase2',units='pix', 
-    image=u'/Users/ec531/Library/CloudStorage/Dropbox/ART-AI/Coding/Medical_Diagnosis_Game/MDGSpring20Task/Images/instructions2phase2.png', mask=None,
+    image=u'X:\Psychology\ResearchProjects\JAHoffmann\PhDCremenAITeams\MDG\Medical_Diagnosis_Game/Images/instructions2phase2.png', mask=None,
     ori=0, pos=[0, 0], size=[1920,1080],
     color=[1,1,1], colorSpace='rgb', opacity=1,
     flipHoriz=False, flipVert=False,
     texRes=128, interpolate=True, depth=0.0)
-# Rescale the image
-new_width = 1920 // 1.5
-new_height = 1080 // 1.5
-background2phase2.size = [new_width, new_height]
+
 #Initialize component for Routine "phase2instr3"
 phase2instr3Clock = core.Clock()
 background3phase2 = visual.ImageStim(win=win, name='background1phase2',units='pix', 
-    image=u'/Users/ec531/Library/CloudStorage/Dropbox/ART-AI/Coding/Medical_Diagnosis_Game/MDGSpring20Task/Images/instructions3phase2.png', mask=None,
+    image=u'X:\Psychology\ResearchProjects\JAHoffmann\PhDCremenAITeams\MDG\Medical_Diagnosis_Game/Images/instructions3phase2.png', mask=None,
     ori=0, pos=[0, 0], size=[1920,1080],
     color=[1,1,1], colorSpace='rgb', opacity=1,
     flipHoriz=False, flipVert=False,
     texRes=128, interpolate=True, depth=0.0)
-# Rescale the image
-new_width = 1920 // 1.5
-new_height = 1080 // 1.5
-background3phase2.size = [new_width, new_height]
+
 #Initialize component for Routine "phase2instr4"
 phase2instr4Clock = core.Clock()
 background4phase2 = visual.ImageStim(win=win, name='background4phase2',units='pix', 
-    image=u'/Users/ec531/Library/CloudStorage/Dropbox/ART-AI/Coding/Medical_Diagnosis_Game/MDGSpring20Task/Images/instructions3phase2.png', mask=None,
+    image=u'X:\Psychology\ResearchProjects\JAHoffmann\PhDCremenAITeams\MDG\Medical_Diagnosis_Game/Images/instructions3phase2.png', mask=None,
     ori=0, pos=[0, 0], size=[1920,1080],
     color=[1,1,1], colorSpace='rgb', opacity=1,
     flipHoriz=False, flipVert=False,
     texRes=128, interpolate=True, depth=0.0)
-# Rescale the image
-new_width = 1920 // 1.5
-new_height = 1080 // 1.5
-background4phase2.size = [new_width, new_height]
-#Initialize componenets for Routine "btwrounds"
-instructionsbtwroundsClock = core.Clock()
-instructionsbtwrounds = visual.ImageStim(win=win, name='instructionsbtwrounds',units='pix', 
-    image=u'/Users/ec531/Library/CloudStorage/Dropbox/ART-AI/Coding/Medical_Diagnosis_Game/MDGSpring20Task/Images/instructionsbtwrounds.png', mask=None,
-    ori=0, pos=[0, 0], size=[1920,1080],
-    color=[1,1,1], colorSpace='rgb', opacity=1,
-    flipHoriz=False, flipVert=False,
-    texRes=128, interpolate=True, depth=0.0)
-# Rescale the image
-new_width = 1920 // 1.5
-new_height = 1080 // 1.5
-instructionsbtwrounds.size = [new_width, new_height]
+
 #Initialize components for Routine "results"
 resultsClock = core.Clock()
 resultsbackground = visual.ImageStim(win=win, name='resultsbackground',units='pix', 
-    image=u'/Users/ec531/Library/CloudStorage/Dropbox/ART-AI/Coding/Medical_Diagnosis_Game/MDGSpring20Task/Images/results.png', mask=None,
+    image=u'X:\Psychology\ResearchProjects\JAHoffmann\PhDCremenAITeams\MDG\Medical_Diagnosis_Game/Images/results.png', mask=None,
     ori=0, pos=[0, 0], size=[1920,1080],
     color=[1,1,1], colorSpace='rgb', opacity=1,
     flipHoriz=False, flipVert=False,
     texRes=128, interpolate=True, depth=0.0)
-# Rescale the image
-new_width = 1920 // 1.5
-new_height = 1080 // 1.5
-resultsbackground.size = [new_width, new_height]
-# Original position and height
-learning1scoretext_original_position = [-285,410]
-learning1scoretext_original_height = 35
-# Scale factor
-scale = 0.5
-# Modify position and height
-learning1scoretext_scaled_position = [int(x * scale) for x in learning1scoretext_original_position]
-learning1scoretext_scaled_height = int(learning1scoretext_original_height * scale)
 learning1scoretext = visual.TextStim(win=win, ori=0, name='learningscoretext',
     text=u'',
     font=u'BatmanForeverAlternate',
-    units=u'pix', pos=learning1scoretext_scaled_position, height=learning1scoretext_scaled_height,wrapWidth=None,
+    units=u'pix', pos=[-285,410], height=35,wrapWidth=None,
     color=u'#004646', colorSpace=u'rgb', opacity=1,
     depth=-8.0)
-# Original position and height
-learning2scoretext_original_position = [-285,410]
-learning2scoretext_original_height = 35
-# Scale factor
-scale = 0.5
-# Modify position and height
-learning2scoretext_scaled_position = [int(x * scale) for x in learning2scoretext_original_position]
-learning2scoretext_scaled_height = int(learning2scoretext_original_height * scale)
 learning2scoretext = visual.TextStim(win=win, ori=0, name='learningscoretext',
     text=u'',
     font=u'BatmanForeverAlternate',
-    units=u'pix', pos=learning2scoretext_scaled_position, height=learning2scoretext_scaled_height,wrapWidth=None,
+    units=u'pix', pos=[-285,410], height=35,wrapWidth=None,
     color=u'#004646', colorSpace=u'rgb', opacity=1,
     depth=-8.0)
-# Original position and height
-learning3scoretext_original_position = [-285,410]
-learning3scoretext_original_height = 35
-# Scale factor
-scale = 0.5
-# Modify position and height
-learning3scoretext_scaled_position = [int(x * scale) for x in learning3scoretext_original_position]
-learning3scoretext_scaled_height = int(learning3scoretext_original_height * scale)
 learning3scoretext = visual.TextStim(win=win, ori=0, name='learningscoretext',
     text=u'',
     font=u'BatmanForeverAlternate',
-    units=u'pix', pos=learning3scoretext_scaled_position, height=learning3scoretext_scaled_height,wrapWidth=None,
+    units=u'pix', pos=[-285,410], height=35,wrapWidth=None,
     color=u'#004646', colorSpace=u'rgb', opacity=1,
     depth=-8.0)
-# Original position and height
-learningscoretext_original_position = [-285,420]
-learningscoretext_original_height = 35
-# Scale factor
-scale = 0.65
-# Modify position and height
-learningscoretext_scaled_position = [int(x * scale) for x in learningscoretext_original_position]
-learningscoretext_scaled_height = int(learningscoretext_original_height * scale)
 learningscoretext = visual.TextStim(win=win, ori=0, name='learningscoretext',
     text=u'',
     font=u'BatmanForeverAlternate',
-    units=u'pix', pos=learningscoretext_scaled_position, height=learningscoretext_original_height,wrapWidth=None,
-    color=u'#FCC700', colorSpace=u'rgb', opacity=1,
+    units=u'pix', pos=[-285,410], height=35,wrapWidth=None,
+    color=u'#004646', colorSpace=u'rgb', opacity=1,
     depth=-8.0)
-# Original position and height
-round1scoretext_original_position = [-285,290]
-round1scoretext_original_height = 35
-# Scale factor
-scale = 0.65
-# Modify position and height
-round1scoretext_scaled_position = [int(x * scale) for x in round1scoretext_original_position]
-round1scoretext_scaled_height = int(round1scoretext_original_height * scale)
 round1scoretext = visual.TextStim(win=win, ori=0, name='learningscoretext',
     text=u'',
     font=u'BatmanForeverAlternate',
-    units=u'pix', pos=round1scoretext_scaled_position, height=round1scoretext_original_height,wrapWidth=None,
+    units=u'pix', pos=[-285,285], height=35,wrapWidth=None,
     color=u'#FCC700', colorSpace=u'rgb', opacity=1,
     depth=-8.0)
-# Original position and height
-round2scoretext_original_position = [-285,175]
-round2scoretext_original_height = 35
-# Scale factor
-scale = 0.65
-# Modify position and height
-round2scoretext_scaled_position = [int(x * scale) for x in round2scoretext_original_position]
-round2scoretext_scaled_height = int(round2scoretext_original_height * scale)
 round2scoretext = visual.TextStim(win=win, ori=0, name='learningscoretext',
     text=u'',
     font=u'BatmanForeverAlternate',
-    units=u'pix', pos=round2scoretext_scaled_position, height=round2scoretext_original_height,wrapWidth=None,
+    units=u'pix', pos=[-285,170], height=35,wrapWidth=None,
     color=u'#FCC700', colorSpace=u'rgb', opacity=1,
     depth=-8.0)
-# Original position and height
-round3scoretext_original_position = [-285,55]
-round3scoretext_original_height = 35
-# Scale factor
-scale = 0.5
-# Modify position and height
-round3scoretext_scaled_position = [int(x * scale) for x in round3scoretext_original_position]
-round3scoretext_scaled_height = int(round3scoretext_original_height * scale)
 round3scoretext = visual.TextStim(win=win, ori=0, name='learningscoretext',
     text=u'',
     font=u'BatmanForeverAlternate',
-    units=u'pix', pos=round3scoretext_scaled_position, height=round3scoretext_scaled_height,wrapWidth=None,
+    units=u'pix', pos=[-285,55], height=35,wrapWidth=None,
     color=u'#FCC700', colorSpace=u'rgb', opacity=1,
     depth=-8.0)
-# Original position and height
-round4scoretext_original_position = [-285,60]
-round4scoretext_original_height = 35
-# Scale factor
-scale = 0.5
-# Modify position and height
-round4scoretext_scaled_position = [int(x * scale) for x in round4scoretext_original_position]
-round4scoretext_scaled_height = int(round4scoretext_original_height * scale)
 round4scoretext = visual.TextStim(win=win, ori=0, name='learningscoretext',
     text=u'',
     font=u'BatmanForeverAlternate',
-    units=u'pix', pos=round4scoretext_scaled_position, height=round4scoretext_scaled_height,wrapWidth=None,
+    units=u'pix', pos=[-285,-60], height=35,wrapWidth=None,
     color=u'#FCC700', colorSpace=u'rgb', opacity=1,
     depth=-8.0)
-# Original position and height
-round5scoretext_original_position = [-285,-175]
-round5scoretext_original_height = 35
-# Scale factor
-scale = 0.5
-# Modify position and height
-round5scoretext_scaled_position = [int(x * scale) for x in round5scoretext_original_position]
-round5scoretext_scaled_height = int(round5scoretext_original_height * scale)
 round5scoretext = visual.TextStim(win=win, ori=0, name='learningscoretext',
     text=u'',
     font=u'BatmanForeverAlternate',
-    units=u'pix', pos=round5scoretext_scaled_position, height=round5scoretext_scaled_height,wrapWidth=None,
+    units=u'pix', pos=[-285,-175], height=35,wrapWidth=None,
     color=u'#FCC700', colorSpace=u'rgb', opacity=1,
     depth=-8.0)
-# Original position and height
-round6scoretext_original_position = [-285,-290]
-round6scoretext_original_height = 35
-# Scale factor
-scale = 0.5
-# Modify position and height
-round6scoretext_scaled_position = [int(x * scale) for x in round6scoretext_original_position]
-round6scoretext_scaled_height = int(round6scoretext_original_height * scale)
 round6scoretext = visual.TextStim(win=win, ori=0, name='learningscoretext',
     text=u'',
     font=u'BatmanForeverAlternate',
-    units=u'pix', pos=round6scoretext_scaled_position, height=round6scoretext_scaled_height,wrapWidth=None,
+    units=u'pix', pos=[-285,-290], height=35,wrapWidth=None,
     color=u'#FCC700', colorSpace=u'rgb', opacity=1,
     depth=-8.0)
-# Original position and height
-topscoretext_original_position = [490,-180]
-topscoretext_original_height = 35
-# Scale factor
-scale = 0.65
-# Modify position and height
-topscoretext_scaled_position = [int(x * scale) for x in topscoretext_original_position]
-topscoretext_scaled_height = int(topscoretext_original_height * scale)
 topscoretext = visual.TextStim(win=win, ori=0, name='learningscoretext',
     text=u'',
     font=u'BatmanForeverAlternate',
-    units=u'pix', pos=topscoretext_scaled_position, height=topscoretext_original_height,wrapWidth=None,
+    units=u'pix', pos=[490,-180], height=70,wrapWidth=None,
     color=u'#FCC700', colorSpace=u'rgb', opacity=1,
     depth=-8.0)
+
 #Initialize components for Routine "debrief"
 debrief1Clock = core.Clock()
 debrief2Clock = core.Clock()
 goodbyeClock = core.Clock()
-debriefimage1 = visual.ImageStim(win=win, name='debriefimage1',units='pix', 
-    image=u'/Users/ec531/Library/CloudStorage/Dropbox/ART-AI/Coding/Medical_Diagnosis_Game/MDGSpring20Task/Images/debrief1.png', mask=None,
+debrief1 = visual.ImageStim(win=win, name='debrief1',units='pix', 
+    image=u'X:\Psychology\ResearchProjects\JAHoffmann\PhDCremenAITeams\MDG\Medical_Diagnosis_Game/Images/instructionsbackground.png', mask=None,
     ori=0, pos=[0, 0], size=[1920,1080],
     color=[1,1,1], colorSpace='rgb', opacity=1,
     flipHoriz=False, flipVert=False,
-    texRes=128, interpolate=True, depth=0.0)
-# Rescale the image
-new_width = 1920 // 1.5
-new_height = 1080 // 1.5
-debriefimage1.size = [new_width, new_height]
-debriefimage2 = visual.ImageStim(win=win, name='debriefimage2',units='pix', 
-    image=u'/Users/ec531/Library/CloudStorage/Dropbox/ART-AI/Coding/Medical_Diagnosis_Game/MDGSpring20Task/Images/debrief2.png', mask=None,
-    ori=0, pos=[0, 0], size=[1920,1080],
-    color=[1,1,1], colorSpace='rgb', opacity=1,
-    flipHoriz=False, flipVert=False,
-    texRes=128, interpolate=True, depth=0.0)
-# Rescale the image
-new_width = 1920 // 1.5
-new_height = 1080 // 1.5
-debriefimage2.size = [new_width, new_height]
+    texRes=128, interpolate=True, depth=-1.0)
+
+debrief1text = visual.TextStim(win=win, name='debrief1Text',
+    text=u'',
+    font=u'BatmanForeverAlternate',
+    units=u'pix', pos=(0, 0),height=20, wrapWidth=1200, color=u'#FCC700', colorSpace=u'rgb', opacity=1, depth=-10.0)
+
+debrief2text = visual.TextStim(win=win, name='debrief2Text',
+    text=u'',
+    font=u'BatmanForeverAlternate',
+    units=u'pix', pos=(0, 0),height=30, wrapWidth=1200, color=u'#FCC700', colorSpace=u'rgb', opacity=1, depth=-10.0)
+
 goodbye = visual.ImageStim(win=win, name='goodbye',units='pix', 
-    image=u'/Users/ec531/Library/CloudStorage/Dropbox/ART-AI/Coding/Medical_Diagnosis_Game/MDGSpring20Task/Images/goodbye.png', mask=None,
+    image=u'X:\Psychology\ResearchProjects\JAHoffmann\PhDCremenAITeams\MDG\Medical_Diagnosis_Game/Images/goodbye.png', mask=None,
     ori=0, pos=[0, 0], size=[1920,1080],
     color=[1,1,1], colorSpace='rgb', opacity=1,
     flipHoriz=False, flipVert=False,
     texRes=128, interpolate=True, depth=-10.0)
-# Rescale the image
-new_width = 1920 // 1.5
-new_height = 1080 // 1.5
-goodbye.size = [new_width, new_height]
 goodbyeglow = visual.ImageStim(win=win, name='goodbyeglow',units='pix', 
-    image=u'/Users/ec531/Library/CloudStorage/Dropbox/ART-AI/Coding/Medical_Diagnosis_Game/MDGSpring20Task/Images/goodbyeglow.png', mask=None,
+    image=u'X:\Psychology\ResearchProjects\JAHoffmann\PhDCremenAITeams\MDG\Medical_Diagnosis_Game/Images/goodbyeglow.png', mask=None,
     ori=0, pos=[0, 0], size=[1920,1080],
     color=[1,1,1], colorSpace='rgb', opacity=1,
     flipHoriz=False, flipVert=False,
     texRes=128, interpolate=True, depth=-9.0)
-# Rescale the image
-new_width = 1920 // 1.5
-new_height = 1080 // 1.5
-goodbyeglow.size = [new_width, new_height]
+
 #Initialize components for Routine "readyforphase2"
 instructions9 = visual.ImageStim(win=win, name='instructions9',units='pix', 
-    image=u'/Users/ec531/Library/CloudStorage/Dropbox/ART-AI/Coding/Medical_Diagnosis_Game/MDGSpring20Task/Images/instructions9.png', mask=None,
+    image=u'X:\Psychology\ResearchProjects\JAHoffmann\PhDCremenAITeams\MDG\Medical_Diagnosis_Game/Images/instructions9.png', mask=None,
     ori=0, pos=[0, 0], size=[1920,1080],
     color=[1,1,1], colorSpace='rgb', opacity=1,
     flipHoriz=False, flipVert=False,
     texRes=128, interpolate=True, depth=0.0)
-# Rescale the image
-new_width = 1920 // 1.5
-new_height = 1080 // 1.5
-instructions9.size = [new_width, new_height]
 
 # Create some handy timers
 globalClock = core.Clock()  # to track the time since experiment started
@@ -1218,14 +819,7 @@ routineTimer = core.CountdownTimer()  # to track time remaining of each (non-sli
 blockClock = core.Clock()
 
 #_#START EXP###########################################################################################################################################################START EXP##################################################
-#_#START EXP###########################################################################################################################################################START EXP##################################################
-#_#START EXP###########################################################################################################################################################START EXP##################################################
-#_#START EXP###########################################################################################################################################################START EXP##################################################
-#_#START EXP###########################################################################################################################################################START EXP##################################################
-#_#START EXP###########################################################################################################################################################START EXP##################################################
-#_#START EXP###########################################################################################################################################################START EXP##################################################
-#_#START EXP###########################################################################################################################################################START EXP##################################################
-#_#START EXP###########################################################################################################################################################START EXP##################################################
+
 #------Prepare to start Routine "instructions1"-----------------------------------------------------------------------------------------------------------------------------------------------------------------
 t = 0
 instructions1Clock.reset()  # clock 
@@ -1237,6 +831,7 @@ inst_key_resp_1.status = NOT_STARTED
 instructions1Components = []
 instructions1Components.append(backgroundinst1)
 instructions1Components.append(inst_key_resp_1)
+instructions1Components.append(instructions1text)
 for thisComponent in instructions1Components:
     if hasattr(thisComponent, 'status'):
         thisComponent.status = NOT_STARTED
@@ -1255,7 +850,7 @@ while continueRoutine:
         backgroundinst1.tStart = t  # underestimates by a little under one frame
         backgroundinst1.frameNStart = frameN  # exact frame index
         backgroundinst1.setAutoDraw(True)
-    
+
     # *inst_key_resp_1* updates
     if t >= 0.0 and inst_key_resp_1.status == NOT_STARTED:
         # keep track of start time/frame for later
@@ -1265,7 +860,7 @@ while continueRoutine:
         # keyboard checking is just starting
         event.clearEvents(eventType='keyboard')
     if inst_key_resp_1.status == STARTED:
-        theseKeys = event.getKeys(keyList=['p'])
+        theseKeys = event.getKeys(keyList=['space'])
         
         # check for quit:
         if "escape" in theseKeys:
@@ -1273,6 +868,11 @@ while continueRoutine:
         if len(theseKeys) > 0:  # at least one key was pressed
             # a response ends the routine
             continueRoutine = False
+
+    # instructions1 text
+    if t >= 0.0 and instructions1text.status == NOT_STARTED:
+        instructions1text.text = 'THANK YOU FOR AGREEING TO PARTICIPATE IN THIS STUDY. \nTO BEGIN, YOU WILL FIRST LEARN TO PLAY THE MEDICAL DIAGNOSIS GAME.\n\nIT IS IMPORTANT THAT YOU READ THESE INSTRUCTIONS CAREFULLY TO UNDERSTAND WHAT YOU WILL BE DOING DURING THE GAME.\n\nPLEASE DO NOT TAKE ANY NOTES DURING THE GAME.\n\nPRESS THE SPACE BAR TO CONTINUE.'
+        instructions1text.setAutoDraw(True)
     
     # check if all components have finished
     if not continueRoutine:  # a component has requested a forced-end of Routine
@@ -1309,9 +909,8 @@ inst_key_resp_2.status = NOT_STARTED
 # keep track of which components have finished
 instructions2Components = []
 instructions2Components.append(backgroundinst2)
-instructions2Components.append(dplinst2)
-instructions2Components.append(inst2pic)
 instructions2Components.append(inst_key_resp_2)
+instructions2Components.append(instructions2text)
 for thisComponent in instructions2Components:
     if hasattr(thisComponent, 'status'):
         thisComponent.status = NOT_STARTED
@@ -1330,21 +929,12 @@ while continueRoutine:
         backgroundinst2.tStart = t  # underestimates by a little under one frame
         backgroundinst2.frameNStart = frameN  # exact frame index
         backgroundinst2.setAutoDraw(True)
-    
-    # *dplinst2* updates
-    if t >= 0.0 and dplinst2.status == NOT_STARTED:
-        # keep track of start time/frame for later
-        dplinst2.tStart = t  # underestimates by a little under one frame
-        dplinst2.frameNStart = frameN  # exact frame index
-        dplinst2.setAutoDraw(True)
-    
-    # *inst2pic* updates
-    if t >= 0.0 and inst2pic.status == NOT_STARTED:
-        # keep track of start time/frame for later
-        inst2pic.tStart = t  # underestimates by a little under one frame
-        inst2pic.frameNStart = frameN  # exact frame index
-        inst2pic.setAutoDraw(True)
-    
+
+    if t >= 0.0 and backgroundinst2.status == STARTED:
+        # instructions2 text
+        instructions2text.text = 'THE GAME HAS TWO PARTS, EACH PART WITH THE SAME GOAL: TO EARN AS MANY POINTS ($) AS YOU POSSIBLE CAN.\n\nTO ACHIEVE THIS GOAL, YOU WILL BE TAKING ON THE ROLE OF A MEDICAL DOCTOR DIAGNOSING PATIENTS. FOR EACH PATIENT THAT YOU CORRECTLY DIAGNOSE, $1,000 WILL BE ADDED TO YOUR SCORE. \n\nALL THE PATIENTS WILL HAVE ONE OF FOUR FICTITIOUS DISEASES: METALYTIS, ZYMOSIS, GWARONIA, OR DESCOLADA.\n\nYOU WILL FIRST BE SHOWN THE SYMPTOM OR SIGN THAT PATIENT HAS. THESE CAN BE EITHER: MIGRAINE, FEVER, ACHE, OR RASH.\n\nTO HELP YOU MAKE THE DIAGNOSIS YOU CAN REQUEST UP TO FOUR TESTS: MRI SCAN, CAT SCAN, XRAY, AND LAB TEST.'
+        instructions2text.setAutoDraw(True)
+
     # *inst_key_resp_2* updates
     if t >= 0.0 and inst_key_resp_2.status == NOT_STARTED:
         # keep track of start time/frame for later
@@ -1385,95 +975,6 @@ while continueRoutine:
 
 #-------Ending Routine "instructions2"-------
 for thisComponent in instructions2Components:
-    if hasattr(thisComponent, "setAutoDraw"):
-        thisComponent.setAutoDraw(False)
-
-#------Prepare to start Routine "instructions3"-----------------------------------------------------------------------------------------------------------------------------------------------------------------
-t = 0
-instructions3Clock.reset()  # clock 
-frameN = -1
-# update component parameters for each repeat
-inst_key_resp_3 = event.BuilderKeyResponse()  # create an object of type KeyResponse
-inst_key_resp_3.status = NOT_STARTED
-# keep track of which components have finished
-instructions3Components = []
-instructions3Components.append(instbackground3)
-instructions3Components.append(dplinst3)
-instructions3Components.append(inst3pic)
-instructions3Components.append(inst_key_resp_3)
-for thisComponent in instructions3Components:
-    if hasattr(thisComponent, 'status'):
-        thisComponent.status = NOT_STARTED
-
-#-------Start Routine "instructions3"-------
-continueRoutine = True
-while continueRoutine:
-    # get current time
-    t = instructions3Clock.getTime()
-    frameN = frameN + 1  # number of completed frames (so 0 is the first frame)
-    # update/draw components on each frame
-    
-    # *instbackground3* updates
-    if t >= 0.0 and instbackground3.status == NOT_STARTED:
-        # keep track of start time/frame for later
-        instbackground3.tStart = t  # underestimates by a little under one frame
-        instbackground3.frameNStart = frameN  # exact frame index
-        instbackground3.setAutoDraw(True)
-    
-    # *dplinst3* updates
-    if t >= 0.0 and dplinst3.status == NOT_STARTED:
-        # keep track of start time/frame for later
-        dplinst3.tStart = t  # underestimates by a little under one frame
-        dplinst3.frameNStart = frameN  # exact frame index
-        dplinst3.setAutoDraw(True)
-    
-    # *inst3pic* updates
-    if t >= 0.0 and inst3pic.status == NOT_STARTED:
-        # keep track of start time/frame for later
-        inst3pic.tStart = t  # underestimates by a little under one frame
-        inst3pic.frameNStart = frameN  # exact frame index
-        inst3pic.setAutoDraw(True)
-    
-    # *inst_key_resp_3* updates
-    if t >= 0.0 and inst_key_resp_3.status == NOT_STARTED:
-        # keep track of start time/frame for later
-        inst_key_resp_3.tStart = t  # underestimates by a little under one frame
-        inst_key_resp_3.frameNStart = frameN  # exact frame index
-        inst_key_resp_3.status = STARTED
-        # keyboard checking is just starting
-        event.clearEvents(eventType='keyboard')
-    if inst_key_resp_3.status == STARTED:
-        theseKeys = event.getKeys(keyList=['space'])
-        
-        # check for quit:
-        if "escape" in theseKeys:
-            endExpNow = True
-        if len(theseKeys) > 0:  # at least one key was pressed
-            # a response ends the routine
-            continueRoutine = False
-    
-    # check if all components have finished
-    if not continueRoutine:  # a component has requested a forced-end of Routine
-        routineTimer.reset()  # if we abort early the non-slip timer needs reset
-        break
-    continueRoutine = False  # will revert to True if at least one component still running
-    for thisComponent in instructions3Components:
-        if hasattr(thisComponent, "status") and thisComponent.status != FINISHED:
-            continueRoutine = True
-            break  # at least one component has not yet finished
-    
-    # check for quit (the Esc key)
-    if endExpNow or event.getKeys(keyList=["escape"]):
-        core.quit()
-    
-    # refresh the screen
-    if continueRoutine:  # don't flip if this routine is over or we'll get a blank screen
-        win.flip()
-    else:  # this Routine was not non-slip safe so reset non-slip timer
-        routineTimer.reset()
-
-#-------Ending Routine "instructions3"-------
-for thisComponent in instructions3Components:
     if hasattr(thisComponent, "setAutoDraw"):
         thisComponent.setAutoDraw(False)
 
@@ -1955,244 +1456,6 @@ for thisComponent in instructions5Components:
     if hasattr(thisComponent, "setAutoDraw"):
         thisComponent.setAutoDraw(False)
 
-#------Prepare to start Routine "instructions6"-----------------------------------------------------------------------------------------------------------------------------------------------------------------
-t = 0
-instructions6Clock.reset()  # clock 
-frameN = -1
-# update component parameters for each repeat
-diagnosis.reset()
-# keep track of which components have finished
-instructions6Components = []
-instructions6Components.append(backgroundinst6)
-instructions6Components.append(diagnosis)
-instructions6Components.append(mouse)
-instructions6Components.append(Test1Text)
-instructions6Components.append(Test2Text)
-instructions6Components.append(Test3Text)
-instructions6Components.append(Test4Text)
-instructions6Components.append(Test1Shape)
-instructions6Components.append(Test2Shape)
-instructions6Components.append(Test3Shape)
-instructions6Components.append(Test4Shape)
-instructions6Components.append(Random1Shape)
-instructions6Components.append(Random2Shape)
-instructions6Components.append(Random3Shape)
-instructions6Components.append(Random4Shape)
-instructions6Components.append(GenImage)
-for thisComponent in instructions6Components:
-    if hasattr(thisComponent, 'status'):
-        thisComponent.status = NOT_STARTED
-
-#-------Start Routine "instructions6"-------
-continueRoutine = True
-while continueRoutine:
-    # get current time
-    t = instructions6Clock.getTime()
-    frameN = frameN + 1  # number of completed frames (so 0 is the first frame)
-    # update/draw components on each frame
-    
-    # *backgroundinst6* updates
-    if t >= 0.0 and backgroundinst6.status == NOT_STARTED:
-        # keep track of start time/frame for later
-        backgroundinst6.draw()
-        backgroundinst6.tStart = t  # underestimates by a little under one frame
-        backgroundinst6.frameNStart = frameN  # exact frame index
-    # *diagnosis* updates
-    if t > 0.0:
-        diagnosis.draw()
-        continueRoutine = diagnosis.noResponse
-        if diagnosis.noResponse == False:
-            diagnosis.response = diagnosis.getRating()
-            diagnosis.rt = diagnosis.getRT()
-            
-    # *GenImage* updates
-    if t >= 0.0 and GenImage.status == NOT_STARTED:
-        GenImage.tStart = t
-        GenImage.frameNStart = frameN
-        GenImage.setOpacity(1)
-        GenImage.setAutoDraw(True)
-        
-    #*Test1Text* updates
-    if t>=0.0 and Test1Text.status==NOT_STARTED:
-        #keep track of start time/frame for later
-        Test1Text.tStart=t#underestimates by a little under one frame
-        Test1Text.frameNStart=frameN#exact frame index
-        Test1Text.setAutoDraw(True)
-    
-    #*Test2Text* updates
-    if t>=0.0 and Test2Text.status==NOT_STARTED:
-        #keep track of start time/frame for later
-        Test2Text.tStart=t#underestimates by a little under one frame
-        Test2Text.frameNStart=frameN#exact frame index
-        Test2Text.setAutoDraw(True)
-    
-    #*Test3Text* updates
-    if t>=0.0 and Test3Text.status==NOT_STARTED:
-        #keep track of start time/frame for later
-        Test3Text.tStart=t#underestimates by a little under one frame
-        Test3Text.frameNStart=frameN#exact frame index
-        Test3Text.setAutoDraw(True)
-    
-    #*Test4Text* updates
-    if t>=0.0 and Test4Text.status==NOT_STARTED:
-        #keep track of start time/frame for later
-        Test4Text.tStart=t#underestimates by a little under one frame
-        Test4Text.frameNStart=frameN#exact frame index
-        Test4Text.setAutoDraw(True)
-    
-    #*Random1Shape* updates
-    if t>=0.0 and Random1Shape.status==NOT_STARTED:
-        Random1Shape.tStart=t
-        Random1Shape.frameNStart=frameN
-        Random1Shape.setAutoDraw(False)
-    
-    #*Random2Shape* updates
-    if t>=0.0 and Random2Shape.status==NOT_STARTED:
-        Random2Shape.tStart=t
-        Random2Shape.frameNStart=frameN
-        Random2Shape.setAutoDraw(False)
-    
-    #*Random3Shape* updates
-    if t>=0.0 and Random3Shape.status==NOT_STARTED:
-        Random3Shape.tStart=t
-        Random3Shape.frameNStart=frameN
-        Random3Shape.setAutoDraw(False)
-    
-    #*Random4Shape* updates
-    if t>=0.0 and Random4Shape.status==NOT_STARTED:
-        Random4Shape.tStart=t
-        Random4Shape.frameNStart=frameN
-        Random4Shape.setAutoDraw(False)
-    
-    #*Test1Shape* updates
-    if t>=0.0 and Test1Shape.status==NOT_STARTED:
-        Test1Shape.tStart=t
-        Test1Shape.frameNStart=frameN
-        Test1Shape.setAutoDraw(True)
-        Test1Shape.status=STARTED
-    
-    if Test1Shape.status==STARTED:
-        if mouse.isPressedIn(Test1Shape) and click1<1:
-            Test1Image.setAutoDraw(True)
-            Test1Text.setColor(u'#FCC700')
-            Cost1Text.setColor(u'#FCC700')
-            Test1Shape.setAutoDraw(False)
-            Test1Image.setOpacity(1)
-            Random1Shape.setAutoDraw(True)
-        
-        if Test1Shape.contains(mouse):
-            Random1Shape.setAutoDraw(True)
-            Test1Shape.setOpacity(0)
-        else:
-            Random1Shape.setAutoDraw(False)
-            Test1Shape.setOpacity(1)
-    
-    #*Test2Shape* updates
-    if t>=0.0 and Test2Shape.status==NOT_STARTED:
-        Test2Shape.tStart=t
-        Test2Shape.frameNStart=frameN
-        Test2Shape.setAutoDraw(True)
-        Test2Shape.status=STARTED
-    
-    if Test2Shape.status==STARTED:
-        if mouse.isPressedIn(Test2Shape) and click2<1:
-            Test2Image.setAutoDraw(True)
-            Test2Text.setColor(u'#FCC700')
-            Cost2Text.setColor(u'#FCC700')
-            Test2Shape.setAutoDraw(False)
-            Test2Image.setOpacity(1)
-            Random2Shape.setAutoDraw(True)
-
-        if Test2Shape.contains(mouse):
-            Random2Shape.setAutoDraw(True)
-            Test2Shape.setOpacity(0)
-        else:
-            Random2Shape.setAutoDraw(False)
-            Test2Shape.setOpacity(1)
-    
-    #*Test3Shape* updates
-    if t>=0.0 and Test3Shape.status==NOT_STARTED:
-        Test3Shape.tStart=t
-        Test3Shape.frameNStart=frameN
-        Test3Shape.setAutoDraw(True)
-        Test3Shape.status=STARTED
-    
-    if Test3Shape.status==STARTED:
-        if mouse.isPressedIn(Test3Shape) and click3<1:
-            Test3Image.setAutoDraw(True)
-            Test3Text.setColor(u'#FCC700')
-            Cost3Text.setColor(u'#FCC700')
-            Test3Shape.setAutoDraw(False)
-            Test3Image.setOpacity(1)
-            Random3Shape.setAutoDraw(True)
-
-        if Test3Shape.contains(mouse):
-            Random3Shape.setAutoDraw(True)
-            Test3Shape.setOpacity(0)
-        else:
-            Random3Shape.setAutoDraw(False)
-            Test3Shape.setOpacity(1)
-
-    #*Test4Shape* updates
-    if t>=0.0 and Test4Shape.status==NOT_STARTED:
-        Test4Shape.tStart=t
-        Test4Shape.frameNStart=frameN
-        Test4Shape.setAutoDraw(True)
-        Test4Shape.status=STARTED
-    
-    if Test4Shape.status==STARTED:
-        if mouse.isPressedIn(Test4Shape) and click4<1:
-            Test4Image.setAutoDraw(True)
-            Test4Text.setColor(u'#FCC700')
-            Cost4Text.setColor(u'#Fcc700')
-            Test4Shape.setAutoDraw(False)
-            Test4Image.setOpacity(1)
-            Random4Shape.setAutoDraw(True)
-
-        if Test4Shape.contains(mouse):
-            Random4Shape.setAutoDraw(True)
-            Test4Shape.setOpacity(0)
-        else:
-            Random4Shape.setAutoDraw(False)
-            Test4Shape.setOpacity(1)
-            
-    # check if all components have finished
-    if not continueRoutine:  # a component has requested a forced-end of Routine
-        routineTimer.reset()  # if we abort early the non-slip timer needs reset
-        break
-    continueRoutine = False  # will revert to True if at least one component still running
-    for thisComponent in instructions6Components:
-        if hasattr(thisComponent, "status") and thisComponent.status != FINISHED:
-            continueRoutine = True
-            break  # at least one component has not yet finished
-    
-    # check for quit (the Esc key)
-    if endExpNow or event.getKeys(keyList=["escape"]):
-        core.quit()
-    
-    # refresh the screen
-    if continueRoutine:  # don't flip if this routine is over or we'll get a blank screen
-        win.flip()
-    else:  # this Routine was not non-slip safe so reset non-slip timer
-        routineTimer.reset()
-
-#-------Ending Routine "instructions6"-------
-for thisComponent in instructions6Components:
-    if hasattr(thisComponent, "setAutoDraw"):
-        thisComponent.setAutoDraw(False)
-# store data for thisExp (ExperimentHandler)
-Test1Image.setOpacity(0)
-Test2Image.setOpacity(0)
-Test3Image.setOpacity(0)
-Test4Image.setOpacity(0)
-Test1Text.setColor(u'#004646')
-Test2Text.setColor(u'#004646')
-Test3Text.setColor(u'#004646')
-Test4Text.setColor(u'#004646')
-Cost1Text.setColor(u'#004646')
-Cost2Text.setColor(u'#004646')
-Cost3Text.setColor(u'#004646')
-Cost4Text.setColor(u'#004646')
 #------Prepare to start Routine "instructions7"-----------------------------------------------------------------------------------------------------------------------------------------------------------------
 t = 0
 instructions7Clock.reset()  # clock 
@@ -2366,7 +1629,7 @@ startComponents = []
 startComponents.append(startpic)
 startComponents.append(startcountdown)
 startComponents.append(startglow)
-startComponents.append(backgroundinst8)
+startComponents.append(backgroundinst1)
 for thisComponent in startComponents:
     if hasattr(thisComponent, 'status'):
         thisComponent.status = NOT_STARTED
@@ -2380,11 +1643,11 @@ while continueRoutine and routineTimer.getTime() > 0:
     # update/draw components on each frame
     
     # *background* updates
-    if t >= 0.0 and backgroundinst8.status == NOT_STARTED:
+    if t >= 0.0 and backgroundinst1.status == NOT_STARTED:
         # keep track of start time/frame for later
-        backgroundinst8.tStart = t  # underestimates by a little under one frame
-        backgroundinst8.frameNStart = frameN  # exact frame index
-        backgroundinst8.setAutoDraw(True)
+        backgroundinst1.tStart = t  # underestimates by a little under one frame
+        backgroundinst1.frameNStart = frameN  # exact frame index
+        backgroundinst1.setAutoDraw(True)
     # *startglow* updates
     if t >= 0.0 and startglow.status == NOT_STARTED:
         startglow.tStart = t
@@ -2444,18 +1707,10 @@ Test3Image.setOpacity(0)
 Test4Image.setOpacity(0)
 
 #++Learning++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++Learning3+++++++++++++++++++++++++++++++++++++++++++++
-#++Learning++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++Learning3+++++++++++++++++++++++++++++++++++++++++++++
-#++Learning++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++Learning3+++++++++++++++++++++++++++++++++++++++++++++
-#++Learning++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++Learning3+++++++++++++++++++++++++++++++++++++++++++++
-#++Learning++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++Learning3+++++++++++++++++++++++++++++++++++++++++++++
-#++Learning++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++Learning3+++++++++++++++++++++++++++++++++++++++++++++
-#++Learning++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++Learning3+++++++++++++++++++++++++++++++++++++++++++++
-#++Learning++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++Learning3+++++++++++++++++++++++++++++++++++++++++++++
-#++Learning++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++Learning3+++++++++++++++++++++++++++++++++++++++++++++
 # set up handler to look after randomisation of conditions etc
-learningtrials = data.TrialHandler(nReps=1, method=u'random', 
+learningtrials = data.TrialHandler(nReps=12, method=u'random', 
     extraInfo=expInfo, originPath=None,
-    trialList=data.importConditions('/Users/ec531/Library/CloudStorage/Dropbox/ART-AI/Coding/Medical_Diagnosis_Game/MDGSpring20Task/ConditionsTest.xlsx'),
+    trialList=data.importConditions('X:\Psychology\ResearchProjects\JAHoffmann\PhDCremenAITeams\MDG\Medical_Diagnosis_Game\MDGSpring20Task/conditions1.xlsx'),
     seed=None, name='learningtrials')
 thisExp.addLoop(learningtrials)  # add the loop to the experiment
 blockClock.reset()
@@ -2475,6 +1730,7 @@ for thisTrial in learningtrials:
     if thisTrial != None:
         for paramName in thisTrial.keys():
             exec('{}=thisTrial[paramName]'.format(paramName))
+
     #------Prepare to start Routine "loading"-----------------------------------------------------------------------------------------------------------------------------------------------------------------
     TrialResp=0
     CorrResp=0
@@ -2704,93 +1960,7 @@ for thisTrial in learningtrials:
         if hasattr(thisComponent, 'status'):
             thisComponent.status = NOT_STARTED
     
-    #-------Start Routine "loading"-------
-    continueRoutine = True
-    while continueRoutine and routineTimer.getTime() > 0:
-        # get current time
-        t = loadingClock.getTime()
-        frameN = frameN + 1  # number of completed frames (so 0 is the first frame)
-        # update/draw components on each frame
-        # *learningbackground* updates
-        if t >= 0.0 and learningbackground.status == NOT_STARTED:
-            # keep track of start time/frame for later
-            learningbackground.tStart = t  # underestimates by a little under one frame
-            learningbackground.frameNStart = frameN  # exact frame index
-            learningbackground.setAutoDraw(True)
-        elif learningbackground.status == STARTED and t >= (0.0 + (1.5-win.monitorFramePeriod*0.75)): #most of one frame period left
-            learningbackground.setAutoDraw(False)
-        
-        # *loadingpic* updates
-        if t >= 0.0 and loadingpic.status == NOT_STARTED:
-            # keep track of start time/frame for later
-            loadingpic.tStart = t  # underestimates by a little under one frame
-            loadingpic.frameNStart = frameN  # exact frame index
-            loadingpic.setAutoDraw(True)
-        elif loadingpic.status == STARTED and t >= (0.0 + (1.5-win.monitorFramePeriod*0.75)): #most of one frame period left
-            loadingpic.setAutoDraw(False)
-        loadingpic.setOpacity(0.6+(0.3*(cos(4*t+1.5))))
-        
-        # *Test1Text* updates
-        if t>=text1delay and Test1Text.status ==NOT_STARTED:
-            #keep track of start time/frame for later
-            Test1Text.tStart = t
-            Test1Text.frameNStart = frameN
-            Test1Text.setAutoDraw(True)
-        elif Test1Text.status == STARTED and t >= (0.0 + (1.5-win.monitorFramePeriod*0.75)):
-            Test1Text.setAutoDraw(False)
-            
-        # *Test2Text* updates
-        if t>=text2delay and Test2Text.status ==NOT_STARTED:
-            #keep track of start time/frame for later
-            Test2Text.tStart = t
-            Test2Text.frameNStart = frameN
-            Test2Text.setAutoDraw(True)
-        elif Test2Text.status == STARTED and t >= (0.0 + (1.5-win.monitorFramePeriod*0.75)):
-            Test2Text.setAutoDraw(False)
-            
-        # *Test3Text* updates
-        if t>=text3delay and Test3Text.status ==NOT_STARTED:
-            #keep track of start time/frame for later
-            Test3Text.tStart = t
-            Test3Text.frameNStart = frameN
-            Test3Text.setAutoDraw(True)
-        elif Test3Text.status == STARTED and t >= (0.0 + (1.5-win.monitorFramePeriod*0.75)):
-            Test3Text.setAutoDraw(False)
-            
-        # *Test4Text* updates
-        if t>=text4delay and Test4Text.status ==NOT_STARTED:
-            #keep track of start time/frame for later
-            Test4Text.tStart = t
-            Test4Text.frameNStart = frameN
-            Test4Text.setAutoDraw(True)
-        elif Test4Text.status == STARTED and t >= (0.0 + (1.5-win.monitorFramePeriod*0.75)):
-            Test4Text.setAutoDraw(False)
-        
-        # check if all components have finished
-        if not continueRoutine:  # a component has requested a forced-end of Routine
-            routineTimer.reset()  # if we abort early the non-slip timer needs reset
-            break
-        continueRoutine = False  # will revert to True if at least one component still running
-        for thisComponent in loadingComponents:
-            if hasattr(thisComponent, "status") and thisComponent.status != FINISHED:
-                continueRoutine = True
-                break  # at least one component has not yet finished
-            
-        # check for quit (the Esc key)
-        if endExpNow or event.getKeys(keyList=["escape"]):
-            core.quit()
-        
-        # refresh the screen
-        if continueRoutine:  # don't flip if this routine is over or we'll get a blank screen
-            win.flip()
-    
-    #-------Ending Routine "loading"-------
-    for thisComponent in loadingComponents:
-        if hasattr(thisComponent, "setAutoDraw"):
-            thisComponent.setAutoDraw(False)
-    
     #------Prepare to start Routine "trial"-----------------------------------------------------------------------------------------------------------------------------------------------------------------
-
     t = 0
     trialClock.reset()  # clock 
     frameN = -1
@@ -2817,7 +1987,6 @@ for thisTrial in learningtrials:
             thisComponent.status = NOT_STARTED
     
     #-------Start Routine "trial"-------
-
     # Mapping shuffled genoutcomes to original genoutcomes
     shuffled_to_original_genoutcomes = {original_genoutcome: shuffled_genoutcome for original_genoutcome, shuffled_genoutcome in zip(symptoms, GENpics)}
 
@@ -3179,12 +2348,6 @@ for thisTrial in learningtrials:
     thisExp.nextEntry()
     
 # completed n repeats of 'trials'=============================================================================================================================================Learning3============================================
-#==Learning==================================================================================================================================================================Learning3============================================
-#==Learning==================================================================================================================================================================Learning3============================================
-#==Learning==================================================================================================================================================================Learning3============================================
-#==Learning==================================================================================================================================================================Learning3============================================
-#==Learning==================================================================================================================================================================Learning3============================================
-#==Learning==================================================================================================================================================================Learning3============================================
 Test1Image.setOpacity(0)
 Test2Image.setOpacity(0)
 Test3Image.setOpacity(0)
@@ -3228,7 +2391,6 @@ while continueRoutine:
         ScoreText.frameNStart = frameN  # exact frame index
         ScoreText.setAutoDraw(True)
         ScoreText.setText('$%i'%(score))
-    
     
     # *inst_key_resp_2* updates
     if t >= 0.0 and inst_key_resp_2.status == NOT_STARTED:
@@ -3274,18 +2436,10 @@ for thisComponent in learningendComponents:
         thisComponent.setAutoDraw(False)
 
 #++Learning2++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++Learning3+++++++++++++++++++++++++++++++++++++++++++++
-#++Learning2++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++Learning3+++++++++++++++++++++++++++++++++++++++++++++
-#++Learning2++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++Learning3+++++++++++++++++++++++++++++++++++++++++++++
-#++Learning2++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++Learning3+++++++++++++++++++++++++++++++++++++++++++++
-#++Learning2++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++Learning3+++++++++++++++++++++++++++++++++++++++++++++
-#++Learning2++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++Learning3+++++++++++++++++++++++++++++++++++++++++++++
-#++Learning2++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++Learning3+++++++++++++++++++++++++++++++++++++++++++++
-#++Learning2++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++Learning3+++++++++++++++++++++++++++++++++++++++++++++
-#++Learning2++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++Learning3+++++++++++++++++++++++++++++++++++++++++++++
 # set up handler to look after randomisation of conditions etc
-learningtrials = data.TrialHandler(nReps=1, method=u'random', 
+learningtrials = data.TrialHandler(nReps=12, method=u'random', 
     extraInfo=expInfo, originPath=None,
-    trialList=data.importConditions('/Users/ec531/Library/CloudStorage/Dropbox/ART-AI/Coding/Medical_Diagnosis_Game/MDGSpring20Task/ConditionsTest.xlsx'),
+    trialList=data.importConditions('X:\Psychology\ResearchProjects\JAHoffmann\PhDCremenAITeams\MDG\Medical_Diagnosis_Game\MDGSpring20Task/conditions1.xlsx'),
     seed=None, name='learningtrials')
 thisExp.addLoop(learningtrials)  # add the loop to the experiment
 blockClock.reset()
@@ -3305,6 +2459,7 @@ for thisTrial in learningtrials:
     if thisTrial != None:
         for paramName in thisTrial.keys():
             exec('{}=thisTrial[paramName]'.format(paramName))
+
     #------Prepare to start Routine "loading"-----------------------------------------------------------------------------------------------------------------------------------------------------------------
     TrialResp=0
     CorrResp=0
@@ -3533,92 +2688,6 @@ for thisTrial in learningtrials:
     for thisComponent in loadingComponents:
         if hasattr(thisComponent, 'status'):
             thisComponent.status = NOT_STARTED
-    
-    #-------Start Routine "loading"-------
-    continueRoutine = True
-    while continueRoutine and routineTimer.getTime() > 0:
-        # get current time
-        t = loadingClock.getTime()
-        frameN = frameN + 1  # number of completed frames (so 0 is the first frame)
-        # update/draw components on each frame
-        # *learningbackground* updates
-        if t >= 0.0 and learningbackground.status == NOT_STARTED:
-            # keep track of start time/frame for later
-            learningbackground.tStart = t  # underestimates by a little under one frame
-            learningbackground.frameNStart = frameN  # exact frame index
-            learningbackground.setAutoDraw(True)
-        elif learningbackground.status == STARTED and t >= (0.0 + (1.5-win.monitorFramePeriod*0.75)): #most of one frame period left
-            learningbackground.setAutoDraw(False)
-        
-        # *loadingpic* updates
-        if t >= 0.0 and loadingpic.status == NOT_STARTED:
-            # keep track of start time/frame for later
-            loadingpic.tStart = t  # underestimates by a little under one frame
-            loadingpic.frameNStart = frameN  # exact frame index
-            loadingpic.setAutoDraw(True)
-        elif loadingpic.status == STARTED and t >= (0.0 + (1.5-win.monitorFramePeriod*0.75)): #most of one frame period left
-            loadingpic.setAutoDraw(False)
-        loadingpic.setOpacity(0.6+(0.3*(cos(4*t+1.5))))
-        
-        # *Test1Text* updates
-        if t>=text1delay and Test1Text.status ==NOT_STARTED:
-            #keep track of start time/frame for later
-            Test1Text.tStart = t
-            Test1Text.frameNStart = frameN
-            Test1Text.setAutoDraw(True)
-        elif Test1Text.status == STARTED and t >= (0.0 + (1.5-win.monitorFramePeriod*0.75)):
-            Test1Text.setAutoDraw(False)
-            
-        # *Test2Text* updates
-        if t>=text2delay and Test2Text.status ==NOT_STARTED:
-            #keep track of start time/frame for later
-            Test2Text.tStart = t
-            Test2Text.frameNStart = frameN
-            Test2Text.setAutoDraw(True)
-        elif Test2Text.status == STARTED and t >= (0.0 + (1.5-win.monitorFramePeriod*0.75)):
-            Test2Text.setAutoDraw(False)
-            
-        # *Test3Text* updates
-        if t>=text3delay and Test3Text.status ==NOT_STARTED:
-            #keep track of start time/frame for later
-            Test3Text.tStart = t
-            Test3Text.frameNStart = frameN
-            Test3Text.setAutoDraw(True)
-        elif Test3Text.status == STARTED and t >= (0.0 + (1.5-win.monitorFramePeriod*0.75)):
-            Test3Text.setAutoDraw(False)
-            
-        # *Test4Text* updates
-        if t>=text4delay and Test4Text.status ==NOT_STARTED:
-            #keep track of start time/frame for later
-            Test4Text.tStart = t
-            Test4Text.frameNStart = frameN
-            Test4Text.setAutoDraw(True)
-        elif Test4Text.status == STARTED and t >= (0.0 + (1.5-win.monitorFramePeriod*0.75)):
-            Test4Text.setAutoDraw(False)
-        
-            
-        # check if all components have finished
-        if not continueRoutine:  # a component has requested a forced-end of Routine
-            routineTimer.reset()  # if we abort early the non-slip timer needs reset
-            break
-        continueRoutine = False  # will revert to True if at least one component still running
-        for thisComponent in loadingComponents:
-            if hasattr(thisComponent, "status") and thisComponent.status != FINISHED:
-                continueRoutine = True
-                break  # at least one component has not yet finished
-            
-        # check for quit (the Esc key)
-        if endExpNow or event.getKeys(keyList=["escape"]):
-            core.quit()
-        
-        # refresh the screen
-        if continueRoutine:  # don't flip if this routine is over or we'll get a blank screen
-            win.flip()
-    
-    #-------Ending Routine "loading"-------
-    for thisComponent in loadingComponents:
-        if hasattr(thisComponent, "setAutoDraw"):
-            thisComponent.setAutoDraw(False)
     
     #------Prepare to start Routine "trial"-----------------------------------------------------------------------------------------------------------------------------------------------------------------
     t = 0
@@ -4006,12 +3075,6 @@ for thisTrial in learningtrials:
     thisExp.nextEntry()
     
 # completed n repeats of 'trials'=============================================================================================================================================Learning3============================================
-#==Learning2==================================================================================================================================================================Learning3============================================
-#==Learning2==================================================================================================================================================================Learning3============================================
-#==Learning2==================================================================================================================================================================Learning3============================================
-#==Learning2==================================================================================================================================================================Learning3============================================
-#==Learning2==================================================================================================================================================================Learning3============================================
-#==Learning2==================================================================================================================================================================Learning3============================================
 Test1Image.setOpacity(0)
 Test2Image.setOpacity(0)
 Test3Image.setOpacity(0)
@@ -4019,56 +3082,54 @@ Test4Image.setOpacity(0)
 learningscore=score
 score=learningscore
 
-#------Prepare to start Routine "learningphaseend"-----------------------------------------------------------------------------------------------------------------------------------------------------------------
+#------Prepare to start Routine "btwrounds"-----------------------------------------------------------------------------------------------------------------------------------------------------------------
 t = 0
-learningendClock.reset()  # clock 
+instructionsbtwroundsClock.reset()  # clock 
 frameN = -1
 # update component parameters for each repeat
-inst_key_resp_2 = event.BuilderKeyResponse()  # create an object of type KeyResponse
-inst_key_resp_2.status = NOT_STARTED
+inst_key_resp_7 = event.BuilderKeyResponse()  # create an object of type KeyResponse
+inst_key_resp_7.status = NOT_STARTED
 # keep track of which components have finished
-learningendComponents = []
-learningendComponents.append(learningphasecompleted)
-learningendComponents.append(ScoreText)
-learningendComponents.append(inst_key_resp_2)
-for thisComponent in learningendComponents:
+btwroundsComponents = []
+btwroundsComponents.append(instructionsbtwrounds)
+btwroundsComponents.append(inst_key_resp_7)
+btwroundsComponents.append(ScoreText)
+for thisComponent in btwroundsComponents:
     if hasattr(thisComponent, 'status'):
         thisComponent.status = NOT_STARTED
 
-#-------Start Routine "learningphaseend"-------
+#-------Start Routine "btwrounds"-------
 continueRoutine = True
 while continueRoutine:
     # get current time
-    t = learningendClock.getTime()
+    t = instructionsbtwroundsClock.getTime()
     frameN = frameN + 1  # number of completed frames (so 0 is the first frame)
     # update/draw components on each frame
     
-    # *backgroundinst2* updates
-    if t >= 0.0 and learningphasecompleted.status == NOT_STARTED:
+    # *instructionsbtwrounds* updates
+    if t >= 0.0 and instructionsbtwrounds.status == NOT_STARTED:
         # keep track of start time/frame for later
-        learningphasecompleted.tStart = t  # underestimates by a little under one frame
-        learningphasecompleted.frameNStart = frameN  # exact frame index
-        learningphasecompleted.setAutoDraw(True)
+        instructionsbtwrounds.tStart = t  # underestimates by a little under one frame
+        instructionsbtwrounds.frameNStart = frameN  # exact frame index
+        instructionsbtwrounds.setAutoDraw(True)
     
-    # *ScoreText* updates
     # *ScoreText* updates
     if t >= 0.0 and ScoreText.status == NOT_STARTED:
-        # keep track of start time/frame for later
-        ScoreText.tStart = t  # underestimates by a little under one frame
-        ScoreText.frameNStart = frameN  # exact frame index
+        ScoreText.tStart = t
+        ScoreText.frameNStart = frameN
+        ScoreText.setText("$%i" %(score))
         ScoreText.setAutoDraw(True)
-        ScoreText.setText('$%i'%(learningscore))
     
     
-    # *inst_key_resp_2* updates
-    if t >= 0.0 and inst_key_resp_2.status == NOT_STARTED:
+    # *inst_key_resp_7* updates
+    if t >= 0.0 and inst_key_resp_7.status == NOT_STARTED:
         # keep track of start time/frame for later
-        inst_key_resp_2.tStart = t  # underestimates by a little under one frame
-        inst_key_resp_2.frameNStart = frameN  # exact frame index
-        inst_key_resp_2.status = STARTED
+        inst_key_resp_7.tStart = t  # underestimates by a little under one frame
+        inst_key_resp_7.frameNStart = frameN  # exact frame index
+        inst_key_resp_7.status = STARTED
         # keyboard checking is just starting
         event.clearEvents(eventType='keyboard')
-    if inst_key_resp_2.status == STARTED:
+    if inst_key_resp_7.status == STARTED:
         theseKeys = event.getKeys(keyList=['space'])
         
         # check for quit:
@@ -4083,7 +3144,7 @@ while continueRoutine:
         routineTimer.reset()  # if we abort early the non-slip timer needs reset
         break
     continueRoutine = False  # will revert to True if at least one component still running
-    for thisComponent in learningendComponents:
+    for thisComponent in btwroundsComponents:
         if hasattr(thisComponent, "status") and thisComponent.status != FINISHED:
             continueRoutine = True
             break  # at least one component has not yet finished
@@ -4098,11 +3159,10 @@ while continueRoutine:
     else:  # this Routine was not non-slip safe so reset non-slip timer
         routineTimer.reset()
 
-#-------Ending Routine "instructions2"-------
-for thisComponent in learningendComponents:
+#-------Ending Routine "btwrounds"-------
+for thisComponent in btwroundsComponents:
     if hasattr(thisComponent, "setAutoDraw"):
         thisComponent.setAutoDraw(False)
-
 
 #------Prepare to start Routine "phase2instr2"-----------------------------------------------------------------------------------------------------------------------------------------------------------------
 t = 0
@@ -4119,6 +3179,7 @@ phase2instr2Components.append(inst_key_resp_5)
 for thisComponent in phase2instr2Components:
     if hasattr(thisComponent, 'status'):
         thisComponent.status = NOT_STARTED
+
 #-------Start Routine "phase2instr2"-------
 continueRoutine = True
 while continueRoutine:
@@ -4437,6 +3498,7 @@ phase2instr3Components.append(inst_key_resp_6)
 for thisComponent in phase2instr2Components:
     if hasattr(thisComponent, 'status'):
         thisComponent.status = NOT_STARTED
+
 #-------Start Routine "phase2instr2"-------
 continueRoutine = True
 while continueRoutine:
@@ -4509,6 +3571,7 @@ phase2instr4Components.append(inst_key_resp_6)
 for thisComponent in phase2instr4Components:
     if hasattr(thisComponent, 'status'):
         thisComponent.status = NOT_STARTED
+
 #-------Start Routine "phase2instr2"-------
 continueRoutine = True
 while continueRoutine:
@@ -4651,20 +3714,7 @@ for thisComponent in startComponents:
     if hasattr(thisComponent, "setAutoDraw"):
         thisComponent.setAutoDraw(False)
 
-
-
-
 #++Block1++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++Block1+++++++++++++++++++++++++++++++++++++++++++++
-#++Block1++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++Block1+++++++++++++++++++++++++++++++++++++++++++++
-#++Block1++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++Block1+++++++++++++++++++++++++++++++++++++++++++++
-#++Block1++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++Block1+++++++++++++++++++++++++++++++++++++++++++++
-#++Block1++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++Block1+++++++++++++++++++++++++++++++++++++++++++++
-#++Block1++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++Block1+++++++++++++++++++++++++++++++++++++++++++++
-#++Block1++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++Block1+++++++++++++++++++++++++++++++++++++++++++++
-#++Block1++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++Block1+++++++++++++++++++++++++++++++++++++++++++++
-#++Block1++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++Block1+++++++++++++++++++++++++++++++++++++++++++++
-
-#EOIN
 # Initialize click_order variable as an empty list
 click_order = []  
 # Initialize click_order variable as an empty list
@@ -4676,10 +3726,29 @@ for genoutcome in range(1, 5):
 most_common_click_order_dict = {}
 least_common_click_order_dict = {}
 
+# Define a dictionary of symptoms for each genoutcome
+symptoms_dict = {1: "FEVER", 2: "RASH", 3: "MIGRAINE", 4: "ACHE"}
+
+# Define a dictionary where each click_order corresponds to a specific test
+tests_dict = {1: 'MRI', 2: 'CAT', 3: 'XRAY', 4: 'LAB'}
+
+# Define a dictionary to map image file paths to genoutcome 
+genoutcome_map = {
+'X:/Psychology/ResearchProjects/JAHoffmann/PhDCremenAITeams/MDG/Medical_Diagnosis_Game/Images/fever.png': 1,
+'X:/Psychology/ResearchProjects/JAHoffmann/PhDCremenAITeams/MDG/Medical_Diagnosis_Game/Images/rash.png': 2,
+'X:/Psychology/ResearchProjects/JAHoffmann/PhDCremenAITeams/MDG/Medical_Diagnosis_Game/Images/migraine.png': 3,
+'X:/Psychology/ResearchProjects/JAHoffmann/PhDCremenAITeams/MDG/Medical_Diagnosis_Game/Images/ache.png': 4,
+}
+
+# Create a list to store the extracted values of click_order for each trial
+click_order_values = []
+# Initialize advice_names as a list
+advice_names = []
+
 # set up handler to look after randomisation of conditions etc
-trials = data.TrialHandler(nReps=1, method=u'random', 
+trials = data.TrialHandler(nReps=2, method=u'random', 
     extraInfo=expInfo, originPath=None,
-    trialList=data.importConditions('/Users/ec531/Library/CloudStorage/Dropbox/ART-AI/Coding/Medical_Diagnosis_Game/MDGSpring20Task/ConditionsTest.xlsx'),
+    trialList=data.importConditions('X:\Psychology\ResearchProjects\JAHoffmann\PhDCremenAITeams\MDG\Medical_Diagnosis_Game\MDGSpring20Task/conditions2.xlsx'),
     seed=None, name='trials')
 thisExp.addLoop(trials)  # add the loop to the experiment
 blockClock.reset()
@@ -4949,126 +4018,6 @@ for thisTrial in trials:
     Test3Shape.setOpacity(1)
     Test4Shape.setOpacity(1)
 
-    #-------Start Routine "loading"-------
-    continueRoutine = True
-    while continueRoutine and routineTimer.getTime() > 0:
-        # get current time
-        t = loadingClock.getTime()
-        b = blockClock.getTime()
-        frameN = frameN + 1  # number of completed frames (so 0 is the first frame)
-        # update/draw components on each frame
-        # *learningbackground* updates
-        if t >= 0.0 and learningbackground.status == NOT_STARTED:
-            # keep track of start time/frame for later
-            learningbackground.tStart = t  # underestimates by a little under one frame
-            learningbackground.frameNStart = frameN  # exact frame index
-            learningbackground.setAutoDraw(True)
-        
-        # *loadingpic* updates
-        if t >= 0.0 and loadingpic.status == NOT_STARTED:
-            # keep track of start time/frame for later
-            loadingpic.tStart = t  # underestimates by a little under one frame
-            loadingpic.frameNStart = frameN  # exact frame index
-            loadingpic.setAutoDraw(True)
-        elif loadingpic.status == STARTED and t >= (0.0 + (2.0-win.monitorFramePeriod*0.75)): #most of one frame period left
-            loadingpic.setAutoDraw(False)
-        loadingpic.setOpacity(0.6+(0.3*(cos(4*t+1.5))))
-        
-        # *Test1Shape* updates
-        if t >=shape1delay and Test1Shape.status ==NOT_STARTED:
-            #keep track of start time/frame for later
-            Test1Shape.tStart = t
-            Test1Shape.frameNStart = frameN
-            Test1Shape.setAutoDraw(True)
-        elif Test1Shape.status == STARTED and t >= (0.0 + (2.0-win.monitorFramePeriod*0.75)):
-            Test1Shape.setAutoDraw(False)
-            
-        # *Test2Shape* updates
-        if t >=shape2delay and Test2Shape.status ==NOT_STARTED:
-            #keep track of start time/frame for later
-            Test2Shape.tStart = t
-            Test2Shape.frameNStart = frameN
-            Test2Shape.setAutoDraw(True)
-        elif Test2Shape.status == STARTED and t >= (0.0 + (2.0-win.monitorFramePeriod*0.75)):
-            Test2Shape.setAutoDraw(False)
-            
-        # *Test3Shape* updates
-        if t >=shape3delay and Test3Shape.status ==NOT_STARTED:
-            #keep track of start time/frame for later
-            Test3Shape.tStart = t
-            Test3Shape.frameNStart = frameN
-            Test3Shape.setAutoDraw(True)
-        elif Test3Shape.status == STARTED and t >= (0.0 + (2.0-win.monitorFramePeriod*0.75)):
-            Test3Shape.setAutoDraw(False)
-       
-        # *Test4Shape* updates
-        if t >=shape4delay and Test4Shape.status ==NOT_STARTED:
-            #keep track of start time/frame for later
-            Test4Shape.tStart = t
-            Test4Shape.frameNStart = frameN
-            Test4Shape.setAutoDraw(True)
-        elif Test4Shape.status == STARTED and t >= (0.0 + (2.0-win.monitorFramePeriod*0.75)):
-            Test4Shape.setAutoDraw(False)
-        
-        # *Test1Text* updates
-        if t>=text1delay and Test1Text.status ==NOT_STARTED:
-            #keep track of start time/frame for later
-            Test1Text.tStart = t
-            Test1Text.frameNStart = frameN
-            Test1Text.setAutoDraw(True)
-        elif Test1Text.status == STARTED and t >= (0.0 + (2.0-win.monitorFramePeriod*0.75)):
-            Test1Text.setAutoDraw(False)
-            
-        # *Test2Text* updates
-        if t>=text2delay and Test2Text.status ==NOT_STARTED:
-            #keep track of start time/frame for later
-            Test2Text.tStart = t
-            Test2Text.frameNStart = frameN
-            Test2Text.setAutoDraw(True)
-        elif Test2Text.status == STARTED and t >= (0.0 + (2.0-win.monitorFramePeriod*0.75)):
-            Test2Text.setAutoDraw(False)
-            
-        # *Test3Text* updates
-        if t>=text3delay and Test3Text.status ==NOT_STARTED:
-            #keep track of start time/frame for later
-            Test3Text.tStart = t
-            Test3Text.frameNStart = frameN
-            Test3Text.setAutoDraw(True)
-        elif Test3Text.status == STARTED and t >= (0.0 + (2.0-win.monitorFramePeriod*0.75)):
-            Test3Text.setAutoDraw(False)
-            
-        # *Test4Text* updates
-        if t>=text4delay and Test4Text.status ==NOT_STARTED:
-            #keep track of start time/frame for later
-            Test4Text.tStart = t
-            Test4Text.frameNStart = frameN
-            Test4Text.setAutoDraw(True)
-        elif Test4Text.status == STARTED and t >= (0.0 + (2.0-win.monitorFramePeriod*0.75)):
-            Test4Text.setAutoDraw(False)
-        
-        # check if all components have finished
-        if not continueRoutine:  # a component has requested a forced-end of Routine
-            routineTimer.reset()  # if we abort early the non-slip timer needs reset
-            break
-        continueRoutine = False  # will revert to True if at least one component still running
-        for thisComponent in loadingComponents:
-            if hasattr(thisComponent, "status") and thisComponent.status != FINISHED:
-                continueRoutine = True
-                break  # at least one component has not yet finished
-        
-        # check for quit (the Esc key)
-        if endExpNow or event.getKeys(keyList=["escape"]):
-            core.quit()
-        
-        # refresh the screen
-        if continueRoutine:  # don't flip if this routine is over or we'll get a blank screen
-            win.flip()
-    
-    #-------Ending Routine "loading"-------
-    for thisComponent in loadingComponents:
-        if hasattr(thisComponent, "setAutoDraw"):
-            thisComponent.setAutoDraw(False)
-
     #------Prepare to start Routine "trial"-----------------------------------------------------------------------------------------------------------------------------------------------------------------
     t = 0
     trialClock.reset()  # clock 
@@ -5117,6 +4066,7 @@ for thisTrial in trials:
     totalclick=0
     testsRemaining = 4
     while continueRoutine: 
+        symptom_name = symptoms_dict[genoutcome_map[GENpics[genoutcome - 1]]]  # Use the shuffled genoutcome to get the symptom name  
 
         # get current time
         t = trialClock.getTime()
@@ -5231,7 +4181,6 @@ for thisTrial in trials:
                 click1=click1+1
                 testsRemaining=testsRemaining-1
                 test1viewoutcome=test1outcome
-                #EOIN
                 if click1order == 1:
                     click_order.append(1)
                     genoutcome_order.append(genoutcome)
@@ -5343,16 +4292,6 @@ for thisTrial in trials:
                 Random4Shape.setAutoDraw(False)
                 Test4Shape.setOpacity(1)
 
-        # EOIN
-        # Define a dictionary of symptoms for each genoutcome
-        symptoms_dict = {1: "fever", 2: "rash", 3: "migraine", 4: "ache"}
-
-        # Define a dictionary where each click_order corresponds to a specific test
-        tests_dict = {1: 'MRI', 2: 'CAT', 3: 'XRAY', 4: 'LAB'}
-            
-        print('genoutcome_order', genoutcome_order)
-        print('click_order', click_order)
-
         # check if all components have finished
         if not continueRoutine:  # a component has requested a forced-end of Routine
             routineTimer.reset()  # if we abort early the non-slip timer needs reset
@@ -5423,9 +4362,10 @@ for thisTrial in trials:
     trials.addData('viewtest2outcome', test2viewoutcome)
     trials.addData('viewtest3outcome', test3viewoutcome)
     trials.addData('viewtest4outcome', test4viewoutcome)
-    #EOIN
-    trials.addData('click_order', click_order)
-    trials.addData('genoutcome_order', genoutcome_order)
+    # Collect additional data
+    click_order_values = shuffled_to_original_tests[tests_dict[click_order[-1]]]
+    rep_data = {'Symptom': symptom_name, 'First test selected': click_order_values,'Accuracy': Correct}  
+    trial_data.append(rep_data)
     thisExp.nextEntry()
     
     Test1Image.setOpacity(0)
@@ -5441,18 +4381,11 @@ for thisTrial in trials:
     Cost3Text.setColor(u'#004646')
     Cost4Text.setColor(u'#004646')
 
-
 # completed n repeats of 'trials'==========================================================================================================================================Block1============================================
-#==Block1==================================================================================================================================================================Block1============================================
-#==Block1==================================================================================================================================================================Block1============================================
-#==Block1==================================================================================================================================================================Block1============================================
-#==Block1==================================================================================================================================================================Block1============================================
-#==Block1==================================================================================================================================================================Block1============================================
-#==Block1==================================================================================================================================================================Block1============================================
-
 
 block1score = score
 score = block1score
+
 #------Prepare to start Routine "btwrounds"-----------------------------------------------------------------------------------------------------------------------------------------------------------------
 t = 0
 instructionsbtwroundsClock.reset()  # clock 
@@ -5468,8 +4401,8 @@ btwroundsComponents.append(ScoreText)
 for thisComponent in btwroundsComponents:
     if hasattr(thisComponent, 'status'):
         thisComponent.status = NOT_STARTED
-#-------Start Routine "btwrounds"-------
 
+#-------Start Routine "btwrounds"-------
 continueRoutine = True
 while continueRoutine:
     # get current time
@@ -5490,7 +4423,6 @@ while continueRoutine:
         ScoreText.frameNStart = frameN
         ScoreText.setText("$%i" %(score))
         ScoreText.setAutoDraw(True)
-    
     
     # *inst_key_resp_7* updates
     if t >= 0.0 and inst_key_resp_7.status == NOT_STARTED:
@@ -5515,7 +4447,7 @@ while continueRoutine:
         routineTimer.reset()  # if we abort early the non-slip timer needs reset
         break
     continueRoutine = False  # will revert to True if at least one component still running
-    for thisComponent in phase2instr3Components:
+    for thisComponent in btwroundsComponents:
         if hasattr(thisComponent, "status") and thisComponent.status != FINISHED:
             continueRoutine = True
             break  # at least one component has not yet finished
@@ -5535,20 +4467,92 @@ for thisComponent in btwroundsComponents:
     if hasattr(thisComponent, "setAutoDraw"):
         thisComponent.setAutoDraw(False)
 
+#------Prepare to start Routine "AIinstructions"-----------------------------------------------------------------------------------------------------------------------------------------------------------------
+t = 0
+AIinstructionsClock.reset()  # clock 
+frameN = -1
+# update component parameters for each repeat
+inst_key_resp_1 = event.BuilderKeyResponse()  # create an object of type KeyResponse
+inst_key_resp_1.status = NOT_STARTED
+# keep track of which components have finished
+AIinstructionsComponents = []
+AIinstructionsComponents.append(backgroundinst1)
+AIinstructionsComponents.append(inst_key_resp_1)
+AIinstructionsComponents.append(AIinstructionstext)
+for thisComponent in AIinstructionsComponents:
+    if hasattr(thisComponent, 'status'):
+        thisComponent.status = NOT_STARTED
+
+#-------Start Routine "AIinstructions"-------
+continueRoutine = True
+while continueRoutine:
+    # get current time
+    t = AIinstructionsClock.getTime()
+    frameN = frameN + 1  # number of completed frames (so 0 is the first frame)
+    # update/draw components on each frame
+    
+    # *backgroundinst2* updates
+    if t >= 0.0 and backgroundinst1.status == NOT_STARTED:
+        # keep track of start time/frame for later
+        backgroundinst1.tStart = t  # underestimates by a little under one frame
+        backgroundinst1.frameNStart = frameN  # exact frame index
+        backgroundinst1.setAutoDraw(True)
+
+    if t >= 0.0 and backgroundinst1.status == STARTED:
+        AIinstructionstext.text = 'IN THIS NEXT ROUND YOU WILL RECEIVE ADVICE FROM AN AI ADVISOR IN MOST BUT NOT ALL OF THE TRIALS.\n\n THE ADVICE WILL BE PRESENTED TO YOU BEFORE YOU SELECT A TEST. \n\nPLEASE READ THE ADVICE CAREFULLY BEFORE PROCEEDING. IT IS IMPORTANT TO PAY ATTENTION TO THE DETAILS PROVIDED BY EACH ADVISOR. \n\n IF YOU HAVE ANY QUESTIONS PLEASE ASK THE EXPERIMENTER. '
+        AIinstructionstext.setAutoDraw(True)
+
+    # *inst_key_resp_2* updates
+    if t >= 0.0 and inst_key_resp_2.status == NOT_STARTED:
+        # keep track of start time/frame for later
+        inst_key_resp_2.tStart = t  # underestimates by a little under one frame
+        inst_key_resp_2.frameNStart = frameN  # exact frame index
+        inst_key_resp_2.status = STARTED
+        # keyboard checking is just starting
+        event.clearEvents(eventType='keyboard')
+    if inst_key_resp_2.status == STARTED:
+        theseKeys = event.getKeys(keyList=['space'])
+        
+        # check for quit:
+        if "escape" in theseKeys:
+            endExpNow = True
+        if len(theseKeys) > 0:  # at least one key was pressed
+            # a response ends the routine
+            continueRoutine = False
+    
+    # check if all components have finished
+    if not continueRoutine:  # a component has requested a forced-end of Routine
+        routineTimer.reset()  # if we abort early the non-slip timer needs reset
+        break
+    continueRoutine = False  # will revert to True if at least one component still running
+    for thisComponent in AIinstructionsComponents:
+        if hasattr(thisComponent, "status") and thisComponent.status != FINISHED:
+            continueRoutine = True
+            break  # at least one component has not yet finished
+    
+    # check for quit (the Esc key)
+    if endExpNow or event.getKeys(keyList=["escape"]):
+        core.quit()
+    
+    # refresh the screen
+    if continueRoutine:  # don't flip if this routine is over or we'll get a blank screen
+        win.flip()
+    else:  # this Routine was not non-slip safe so reset non-slip timer
+        routineTimer.reset()
+
+#-------Ending Routine "instructions2"-------
+for thisComponent in AIinstructionsComponents:
+    if hasattr(thisComponent, "setAutoDraw"):
+        thisComponent.setAutoDraw(False)
+
 #++Block2++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++Block2+++++++++++++++++++++++++++++++++++++++++++++
-#++Block2++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++Block2+++++++++++++++++++++++++++++++++++++++++++++
-#++Block2++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++Block2+++++++++++++++++++++++++++++++++++++++++++++
-#++Block2++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++Block2+++++++++++++++++++++++++++++++++++++++++++++
-#++Block2++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++Block2+++++++++++++++++++++++++++++++++++++++++++++
-#++Block2++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++Block2+++++++++++++++++++++++++++++++++++++++++++++
-#++Block2++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++Block2+++++++++++++++++++++++++++++++++++++++++++++
-#++Block2++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++Block2+++++++++++++++++++++++++++++++++++++++++++++
-#++Block2++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++Block2+++++++++++++++++++++++++++++++++++++++++++++
+# Create an empty list to collect selected advice
+selected_advice_list = []
 
 # set up handler to look after randomisation of conditions etc
-trials = data.TrialHandler(nReps=1, method=u'random', 
+trials = data.TrialHandler(nReps=2, method=u'random', 
     extraInfo=expInfo, originPath=None,
-    trialList=data.importConditions('/Users/ec531/Library/CloudStorage/Dropbox/ART-AI/Coding/Medical_Diagnosis_Game/MDGSpring20Task/ConditionsTest.xlsx'),
+    trialList=data.importConditions('X:\Psychology\ResearchProjects\JAHoffmann\PhDCremenAITeams\MDG\Medical_Diagnosis_Game\MDGSpring20Task/conditions2.xlsx'),
     seed=None, name='trials')
 thisExp.addLoop(trials)  # add the loop to the experiment
 blockClock.reset()
@@ -5566,6 +4570,7 @@ for thisTrial in trials:
     if thisTrial != None:
         for paramName in thisTrial.keys():
             exec('{}=thisTrial[paramName]'.format(paramName))
+
     #------Prepare to start Routine "loading"-----------------------------------------------------------------------------------------------------------------------------------------------------------------
     globaldiagnosistime=''
     click1=0
@@ -5817,126 +4822,6 @@ for thisTrial in trials:
     Test2Shape.setOpacity(1)
     Test3Shape.setOpacity(1)
     Test4Shape.setOpacity(1)
-    #-------Start Routine "loading"-------
-    continueRoutine = True
-    while continueRoutine and routineTimer.getTime() > 0:
-        # get current time
-        t = loadingClock.getTime()
-        b = blockClock.getTime()
-        frameN = frameN + 1  # number of completed frames (so 0 is the first frame)
-        # update/draw components on each frame
-        # *learningbackground* updates
-        if t >= 0.0 and learningbackground.status == NOT_STARTED:
-            # keep track of start time/frame for later
-            learningbackground.tStart = t  # underestimates by a little under one frame
-            learningbackground.frameNStart = frameN  # exact frame index
-            learningbackground.setAutoDraw(True)
-        
-        # *loadingpic* updates
-        if t >= 0.0 and loadingpic.status == NOT_STARTED:
-            # keep track of start time/frame for later
-            loadingpic.tStart = t  # underestimates by a little under one frame
-            loadingpic.frameNStart = frameN  # exact frame index
-            loadingpic.setAutoDraw(True)
-        elif loadingpic.status == STARTED and t >= (0.0 + (2.0-win.monitorFramePeriod*0.75)): #most of one frame period left
-            loadingpic.setAutoDraw(False)
-        loadingpic.setOpacity(0.6+(0.3*(cos(4*t+1.5))))
-        
-        # *Test1Shape* updates
-        if t >=shape1delay and Test1Shape.status ==NOT_STARTED:
-            #keep track of start time/frame for later
-            Test1Shape.tStart = t
-            Test1Shape.frameNStart = frameN
-            Test1Shape.setAutoDraw(True)
-        elif Test1Shape.status == STARTED and t >= (0.0 + (2.0-win.monitorFramePeriod*0.75)):
-            Test1Shape.setAutoDraw(False)
-            
-        # *Test2Shape* updates
-        if t >=shape2delay and Test2Shape.status ==NOT_STARTED:
-            #keep track of start time/frame for later
-            Test2Shape.tStart = t
-            Test2Shape.frameNStart = frameN
-            Test2Shape.setAutoDraw(True)
-        elif Test2Shape.status == STARTED and t >= (0.0 + (2.0-win.monitorFramePeriod*0.75)):
-            Test2Shape.setAutoDraw(False)
-            
-        # *Test3Shape* updates
-        if t >=shape3delay and Test3Shape.status ==NOT_STARTED:
-            #keep track of start time/frame for later
-            Test3Shape.tStart = t
-            Test3Shape.frameNStart = frameN
-            Test3Shape.setAutoDraw(True)
-        elif Test3Shape.status == STARTED and t >= (0.0 + (2.0-win.monitorFramePeriod*0.75)):
-            Test3Shape.setAutoDraw(False)
-       
-        # *Test4Shape* updates
-        if t >=shape4delay and Test4Shape.status ==NOT_STARTED:
-            #keep track of start time/frame for later
-            Test4Shape.tStart = t
-            Test4Shape.frameNStart = frameN
-            Test4Shape.setAutoDraw(True)
-        elif Test4Shape.status == STARTED and t >= (0.0 + (2.0-win.monitorFramePeriod*0.75)):
-            Test4Shape.setAutoDraw(False)
-        
-        # *Test1Text* updates
-        if t>=text1delay and Test1Text.status ==NOT_STARTED:
-            #keep track of start time/frame for later
-            Test1Text.tStart = t
-            Test1Text.frameNStart = frameN
-            Test1Text.setAutoDraw(True)
-        elif Test1Text.status == STARTED and t >= (0.0 + (2.0-win.monitorFramePeriod*0.75)):
-            Test1Text.setAutoDraw(False)
-            
-        # *Test2Text* updates
-        if t>=text2delay and Test2Text.status ==NOT_STARTED:
-            #keep track of start time/frame for later
-            Test2Text.tStart = t
-            Test2Text.frameNStart = frameN
-            Test2Text.setAutoDraw(True)
-        elif Test2Text.status == STARTED and t >= (0.0 + (2.0-win.monitorFramePeriod*0.75)):
-            Test2Text.setAutoDraw(False)
-            
-        # *Test3Text* updates
-        if t>=text3delay and Test3Text.status ==NOT_STARTED:
-            #keep track of start time/frame for later
-            Test3Text.tStart = t
-            Test3Text.frameNStart = frameN
-            Test3Text.setAutoDraw(True)
-        elif Test3Text.status == STARTED and t >= (0.0 + (2.0-win.monitorFramePeriod*0.75)):
-            Test3Text.setAutoDraw(False)
-            
-        # *Test4Text* updates
-        if t>=text4delay and Test4Text.status ==NOT_STARTED:
-            #keep track of start time/frame for later
-            Test4Text.tStart = t
-            Test4Text.frameNStart = frameN
-            Test4Text.setAutoDraw(True)
-        elif Test4Text.status == STARTED and t >= (0.0 + (2.0-win.monitorFramePeriod*0.75)):
-            Test4Text.setAutoDraw(False)
-
-        # check if all components have finished
-        if not continueRoutine:  # a component has requested a forced-end of Routine
-            routineTimer.reset()  # if we abort early the non-slip timer needs reset
-            break
-        continueRoutine = False  # will revert to True if at least one component still running
-        for thisComponent in loadingComponents:
-            if hasattr(thisComponent, "status") and thisComponent.status != FINISHED:
-                continueRoutine = True
-                break  # at least one component has not yet finished
-        
-        # check for quit (the Esc key)
-        if endExpNow or event.getKeys(keyList=["escape"]):
-            core.quit()
-        
-        # refresh the screen
-        if continueRoutine:  # don't flip if this routine is over or we'll get a blank screen
-            win.flip()
-    
-    #-------Ending Routine "loading"-------
-    for thisComponent in loadingComponents:
-        if hasattr(thisComponent, "setAutoDraw"):
-            thisComponent.setAutoDraw(False)
-
 
     #------Prepare to start Routine "trial"-----------------------------------------------------------------------------------------------------------------------------------------------------------------
     t = 0
@@ -5968,8 +4853,6 @@ for thisTrial in trials:
     trialComponents.append(Cost3Text)
     trialComponents.append(Cost4Text)
     trialComponents.append(GenImage)
-    # EOIN
-    trialComponents.append(PromptTextAI)
     trialComponents.append(PromptTextAdvice)
     
     for thisComponent in trialComponents:
@@ -5988,20 +4871,6 @@ for thisTrial in trials:
     click4order=0
     totalclick=0
     testsRemaining = 4
-    
-    # Define a dictionary of symptoms for each genoutcome
-    symptoms_dict = {1: "fever", 2: "rash", 3: "migraine", 4: "ache"}
-
-    # Define a dictionary where each click_order corresponds to a specific test
-    tests_dict = {1: 'MRI', 2: 'CAT', 3: 'XRAY', 4: 'LAB'}    
-
-    # Define a dictionary to map image file paths to genoutcome 
-    genoutcome_map = {
-    'Images/fever.png': 1,
-    'Images/rash.png': 2,
-    'Images/migraine.png': 3,
-    'Images/ache.png': 4,
-    }
 
     # Initialize the most common and least common click orders
     most_common_click_order_for_genoutcome = None
@@ -6016,35 +4885,50 @@ for thisTrial in trials:
 
     shuffled_test_least = tests_dict.get(least_common_click_order_for_genoutcome, "Test Not Found")
 
+    symptom_name = symptoms_dict[genoutcome_map[GENpics[genoutcome - 1]]]  # Use the shuffled genoutcome to get the user-friendly name    
+    original_test = None
+    advice_name = None
+
     # Generate advice based on these values
-    DA_advice = "This is your AI Advisor\n"
+    DA_advice = "THIS IS YOUR AI ADVISOR.\n"
     if genoutcome in symptoms_dict and most_common_click_order_for_genoutcome in tests_dict:
-        #original_genoutcome = shuffled_to_original_genoutcomes[symptoms_dict[genoutcome]]
         original_test = shuffled_to_original_tests[tests_dict[most_common_click_order_for_genoutcome]]
-        user_friendly_name = symptoms_dict[genoutcome_map[GENpics[genoutcome - 1]]]  # Use the shuffled genoutcome to get the user-friendly name
-        DA_advice += f"When the patient has had {user_friendly_name}, you have most frequently requested {original_test}, consider requesting a different test this time."
+        symptom_name = symptoms_dict[genoutcome_map[GENpics[genoutcome - 1]]]
+        #DA_advice += f"WHEN THE PATIENT HAS HAD {symptom_name}, YOU HAVE MOST FREQUENTLY REQUESTED {original_test}, \nCONSIDER REQUESTING A DIFFERENT TEST THIS TIME."
+        DA_advice += f"When the patient has had {symptom_name}, you have MOST FREQUENTLY requested {original_test}, \nconsider requesting a DIFFERENT TEST this time."
+        advice_name = 'DA'
+        random_advice = DA_advice
+        advice_names.append(advice_name)
     else:
-        DA_advice += "Unable to provide advice due to missing data."
+        DA_advice += "UNABLE TO PROVIDE ADVICE DUE TO MISSING DATA."
 
-    FAC_advice = "This is your AI Advisor\n"
+    FAC_advice = "THIS IS YOUR AI ADVISOR.\n"
     if genoutcome in symptoms_dict and most_common_click_order_for_genoutcome in tests_dict:
-       # original_genoutcome = shuffled_to_original_genoutcomes[symptoms_dict[genoutcome]]
         original_test = shuffled_to_original_tests[tests_dict[most_common_click_order_for_genoutcome]]
-        user_friendly_name = symptoms_dict[genoutcome_map[GENpics[genoutcome - 1]]]  # Use the shuffled genoutcome to get the user-friendly name
-        FAC_advice += f"When the patient has had {user_friendly_name}, you have most frequently requested {original_test}, consider requesting this test again."
+        symptom_name = symptoms_dict[genoutcome_map[GENpics[genoutcome - 1]]]
+        #FAC_advice += f"WHEN THE PATIENT HAS HAD {symptom_name},YOU HAVE MOST FREQUENTLY REQUESTED {original_test},\n CONSIDER REQUESTING THIS TEST AGAIN."
+        FAC_advice += f"When the patient has had {symptom_name}, you have MOST FREQUENTLY requested {original_test}, \nconsider requesting THIS TEST AGAIN."
+        advice_name = 'FAC'
+        random_advice = FAC_advice
+        advice_names.append(advice_name)
     else:
-        FAC_advice += "Unable to provide advice due to missing data."
+        FAC_advice += "UNABLE TO PROVIDE ADVICE DUE TO MISSING DATA."
 
-    MOD_advice = "This is your AI Advisor\n"
+    MOD_advice = "THIS IS YOUR AI ADVISOR.\n"
     if genoutcome in symptoms_dict and most_common_click_order_for_genoutcome in tests_dict:
-        #original_genoutcome = shuffled_to_original_genoutcomes[symptoms_dict[genoutcome]]
         original_test = shuffled_to_original_tests[tests_dict[least_common_click_order_for_genoutcome]]
-        user_friendly_name = symptoms_dict[genoutcome_map[GENpics[genoutcome - 1]]]  # Use the shuffled genoutcome to get the user-friendly name
-        MOD_advice += f"When the patient has had {user_friendly_name}, you have least frequently requested {original_test}, consider requesting this test this time."
+        symptom_name = symptoms_dict[genoutcome_map[GENpics[genoutcome - 1]]]
+        #MOD_advice += f"WHEN THE PATIENT HAS HAD {symptom_name} YOU HAVE LEAST FREQUENTLY REQUESTED {original_test}, \nCONSIDER REQUESTING THIS TEST THIS TIME."
+        MOD_advice += f"When the patient has had {symptom_name}, you have LEAST FREQUENTLY requested {original_test}, \nconsider requesting THIS TEST this time."
+        advice_name = 'MOD'
+        random_advice = MOD_advice
+        advice_names.append(advice_name)
     else:
-        MOD_advice += "Unable to provide advice due to missing data."  
+        MOD_advice += "UNABLE TO PROVIDE ADVICE DUE TO MISSING DATA."  
 
     NO_advice = ""
+    if NO_advice:
+        advice_name = 'No Advice'
 
     # Create a random generator
     rng = np.random.default_rng()      
@@ -6054,10 +4938,6 @@ for thisTrial in trials:
 
     # Randomly choose advice
     random_advice = rng.choice(advice_options)
-
-    print('DA_advice:', DA_advice)
-    print('FAC_advice:', FAC_advice)
-    print('MOD_advice:', MOD_advice)
 
     while continueRoutine:
 
@@ -6174,7 +5054,6 @@ for thisTrial in trials:
                 click1=click1+1
                 testsRemaining=testsRemaining-1
                 test1viewoutcome=test1outcome
-                #EOIN
                 if click1order == 1:
                     click_order.append(1)
                     genoutcome_order.append(genoutcome)
@@ -6286,21 +5165,8 @@ for thisTrial in trials:
                 Random4Shape.setAutoDraw(False)
                 Test4Shape.setOpacity(1)
         
-        # EOIN
-        print('genoutcome_order', genoutcome_order)
-        print('click_order', click_order)
-        print('click_order_dict', click_order_dict)
-
-        # Display the most common click order
-        print(f"The most common click order for genoutcome {genoutcome} is {most_common_click_order_dict.get(genoutcome, 'N/A')}")
-        print(f"The least common click order for genoutcome {genoutcome} is {least_common_click_order_dict.get(genoutcome, 'N/A')}")
-
-        print('shuffled_to_original_genoutcomes:', shuffled_to_original_genoutcomes)
-        print('shuffled_to_original_tests:', shuffled_to_original_tests)
-
         # AI prompt text
         if t >= 0.0 and GenImage.status == STARTED:
-            # Randomise AI advice 
             PromptTextAdvice.text = random_advice 
             PromptTextAdvice.draw()
 
@@ -6387,37 +5253,35 @@ for thisTrial in trials:
     trials.addData('viewtest2outcome', test2viewoutcome)
     trials.addData('viewtest3outcome', test3viewoutcome)
     trials.addData('viewtest4outcome', test4viewoutcome)
-    # EOIN
-    trials.addData('click_order', click_order)
-    trials.addData('genoutcome_order', genoutcome_order)
     trials.addData('most_common_click_order_for_genoutcome',most_common_click_order_for_genoutcome) 
     trials.addData('least_common_click_order_for_genoutcome',least_common_click_order_for_genoutcome) 
-    trials.addData('Advice', random_advice)
+    trials.addData('Symptom', symptom_name)
+    trials.addData('Advisor', advice_name) 
+    trials.addData('Advice Text', random_advice) 
+    trials.addData('Advice', original_test) 
+    # Collect additional data 
+    if random_advice == DA_advice:
+        advice_name = 'DA'
+    elif random_advice == FAC_advice:
+        advice_name = 'FAC'
+    elif random_advice == MOD_advice:
+        advice_name = 'MOD'
+    else:
+        advice_name = 'NO Advice'
+    click_order_values = shuffled_to_original_tests[tests_dict[click_order[-1]]]
+    rep_data = {'Symptom':symptom_name, 'Advisor': advice_name,'Advice': original_test, 'First test selected': click_order_values,  'Click_order': click_order, 'Genoutcome_order': genoutcome_order,'First test per symptom': click_order_dict} 
+    trial_data.append(rep_data)
     thisExp.nextEntry()
 
-# completed n repeats of 'trials'==========================================================================================================================================Block2============================================
-#==Block2==================================================================================================================================================================Block2============================================
-#==Block2==================================================================================================================================================================Block2============================================
-#==Block2==================================================================================================================================================================Block2============================================
-#==Block2==================================================================================================================================================================Block2============================================
-#==Block2==================================================================================================================================================================Block2============================================
-#==Block2==================================================================================================================================================================Block2============================================
+    trial_data_df = pd.DataFrame(trial_data)
+    trial_data_df.to_csv(filename + '_trial_data.csv', index=False)
 
+# completed n repeats of 'trials'==========================================================================================================================================Block2============================================
 
 block2score = score
 score = block2score
 
-
 #_#END EXP###########################################################################################################################################################END EXP##################################################
-#_#END EXP###########################################################################################################################################################END EXP##################################################
-#_#END EXP###########################################################################################################################################################END EXP##################################################
-#_#END EXP###########################################################################################################################################################END EXP##################################################
-#_#END EXP###########################################################################################################################################################END EXP##################################################
-#_#END EXP###########################################################################################################################################################END EXP##################################################
-#_#END EXP###########################################################################################################################################################END EXP##################################################
-#_#END EXP###########################################################################################################################################################END EXP##################################################
-#_#END EXP###########################################################################################################################################################END EXP##################################################
-
 #------Prepare to start Routine "results"-----------------------------------------------------------------------------------------------------------------------------------------------------------------
 t = 0
 resultsClock.reset()  # clock 
@@ -6436,11 +5300,9 @@ resultsComponents.append(inst_key_resp_9)
 for thisComponent in btwroundsComponents:
     if hasattr(thisComponent, 'status'):
         thisComponent.status = NOT_STARTED
+
 #-------Start Routine "results"-------
 topscore=max(block1score,block2score)
-#topfirst3=np.amax(block1score,block2score,block3score)
-#topsecond3=np.amax(block4score,block5score,block6score)
-#topscore=np.amax(topfirst3,topsecond3)
 continueRoutine = True
 while continueRoutine:
     # get current time
@@ -6542,13 +5404,14 @@ deb_key_resp_1 = event.BuilderKeyResponse()  # create an object of type KeyRespo
 deb_key_resp_1.status = NOT_STARTED
 # keep track of which components have finished
 debrief1Components = []
-debrief1Components.append(debriefimage1)
+debrief1Components.append(debrief1)
 debrief1Components.append(deb_key_resp_1)
+debrief1Components.append(debrief1text)
 for thisComponent in debrief1Components:
     if hasattr(thisComponent, 'status'):
         thisComponent.status = NOT_STARTED
-#-------Start Routine "debrief1"-------
 
+#-------Start Routine "debrief1"-------
 continueRoutine = True
 while continueRoutine:
     # get current time
@@ -6556,12 +5419,12 @@ while continueRoutine:
     frameN = frameN + 1  # number of completed frames (so 0 is the first frame)
     # update/draw components on each frame
     
-    # *debriefimage1* updates
-    if t >= 0.0 and debriefimage1.status == NOT_STARTED:
+    # *debrief1* updates
+    if t >= 0.0 and debrief1.status == NOT_STARTED:
         # keep track of start time/frame for later
-        debriefimage1.tStart = t  # underestimates by a little under one frame
-        debriefimage1.frameNStart = frameN  # exact frame index
-        debriefimage1.setAutoDraw(True)
+        debrief1.tStart = t  # underestimates by a little under one frame
+        debrief1.frameNStart = frameN  # exact frame index
+        debrief1.setAutoDraw(True)
     
     # *deb_key_resp_1* updates
     if t >= 0.0 and deb_key_resp_1.status == NOT_STARTED:
@@ -6580,7 +5443,12 @@ while continueRoutine:
         if len(theseKeys) > 0:  # at least one key was pressed
             # a response ends the routine
             continueRoutine = False
-    
+
+    # debrief1 text
+    if t >= 0.0 and debrief1text.status == NOT_STARTED:
+        debrief1text.text = 'THE GOAL OF THIS STUDY WAS TO INVESTIGATE THE INFLUENCE OF AI ADVICE ON YOUR PERFORMANCE WITHIN THE MEDICAL DIAGNOSIS GAME. SPECIFICALLY, WE WERE EXAMINING HOW YOU SEARCHED FOR NEW INFORMATION WHEN FORMING THE DIAGNOSIS (ILLINGWORTH, 2020). \n\nTHE NUMBER AND ORDER OF TESTS THAT YOU SELECTED, IN COMBINATION WITH THE SYMPTOM YOU WERE SHOWN AND FINAL DIAGNOSIS WERE ALL BEING ANALYZED. THE ANALYSIS COMPARED THE TRIALS THAT WERE PERFORMED WITH AND WITHOUT THE AI ADVICE. \n\nIN ADDITION, THE AI ADVICE CAME IN ONE OF THREE ROLES. EACH ROLE PROVIDED A SUGGESTION BASED ON HOW YOU PREVIOUSLY SELECTED TESTS WHEN SHOWN A PARTICULAR SYMPTOM. ONE ROLE ENCOURAGED YOU TO REQUEST A DIFFERENT TEST TO THAT WHICH YOU PREVIOUSLY REQUESTED. A SECOND ROLE ENCOURAGED YOU TO CONSIDER REQUESTING THE TEST THAT YOU HAD LEAST REQUESTED. THE THIRD ROLE ENCOURAGED YOU TO SELECT THE TEST THAT YOU HAD REQUESTED MOST OFTEN. \n\nWE EXPECT THAT THE AI ADVICE WILL INFLUENCE HOW MANY TESTS YOU REQUESTED AND WHICH TESTS YOU REQUESTED (ILLINGWORTH, 2020). THE INFLUENCE IS ALSO EXPECTED TO DIFFER DEPENDING ON WHICH ROLE PROVIDED THE ADVICE (MATHIEU ET AL., 2008). THE RESULT FROM THIS STUDY WILL BE USED TO INSIGHT AS TO HOW AI MAY BE ABLE TO ASSIST HUMAN DECISION-MAKERS BY OFFERING ADVICE.'
+        debrief1text.setAutoDraw(True)
+
     # check if all components have finished
     if not continueRoutine:  # a component has requested a forced-end of Routine
         routineTimer.reset()  # if we abort early the non-slip timer needs reset
@@ -6615,13 +5483,14 @@ deb_key_resp_2 = event.BuilderKeyResponse()  # create an object of type KeyRespo
 deb_key_resp_2.status = NOT_STARTED
 # keep track of which components have finished
 debrief2Components = []
-debrief2Components.append(debriefimage1)
+debrief2Components.append(debrief1)
 debrief2Components.append(deb_key_resp_2)
+debrief2Components.append(debrief2text)
 for thisComponent in debrief2Components:
     if hasattr(thisComponent, 'status'):
         thisComponent.status = NOT_STARTED
-#-------Start Routine "debrief2"-------
 
+#-------Start Routine "debrief2"-------
 continueRoutine = True
 while continueRoutine:
     # get current time
@@ -6629,12 +5498,12 @@ while continueRoutine:
     frameN = frameN + 1  # number of completed frames (so 0 is the first frame)
     # update/draw components on each frame
     
-    # *debriefimage2* updates
-    if t >= 0.0 and debriefimage2.status == NOT_STARTED:
+    # *debrief1* updates
+    if t >= 0.0 and debrief1.status == NOT_STARTED:
         # keep track of start time/frame for later
-        debriefimage2.tStart = t  # underestimates by a little under one frame
-        debriefimage2.frameNStart = frameN  # exact frame index
-        debriefimage2.setAutoDraw(True)
+        debrief1.tStart = t  # underestimates by a little under one frame
+        debrief1.frameNStart = frameN  # exact frame index
+        debrief1.setAutoDraw(True)
     
     # *deb_key_resp_2* updates
     if t >= 0.0 and deb_key_resp_2.status == NOT_STARTED:
@@ -6653,6 +5522,11 @@ while continueRoutine:
         if len(theseKeys) > 0:  # at least one key was pressed
             # a response ends the routine
             continueRoutine = False
+
+    # debrief2 text
+    if t >= 0.0 and debrief2text.status == NOT_STARTED:
+        debrief2text.text = 'DUE TO THE SENSITIVE NATURE OF THE RESEARCH PROCESS, PLEASE DO NOT DISCUSS THIS PROCEDURE WITH OTHER PEOPLE THAT MAY PARTICIPATE IN THIS EXPERIMENT. \n\nIF YOU HAVE ANY IMMEDIATE QUESTIONS YOU CAN ASK THE EXPERIMENTER OR IF YOU HAVE ANY QUESTIONS AT A LATER STAGE YOU CAN EMAIL EOIN CREMEN (EC531@BATH.AC.UK). \n\nIF YOU HAVE ANY ETHICAL CONCERNS RELATED TO YOUR PARTICIPATION IN THIS STUDY, PLEASE DIRECT THEM TO THE DIGITAL & DATA SCIENCE RESEARCH ETHICS COMMITTEE (DATA-DIGITAL-REC@BATH.AC.UK).'
+        debrief2text.setAutoDraw(True)
     
     # check if all components have finished
     if not continueRoutine:  # a component has requested a forced-end of Routine
@@ -6688,7 +5562,6 @@ bye_key_resp = event.BuilderKeyResponse()  # create an object of type KeyRespons
 bye_key_resp.status = NOT_STARTED
 # keep track of which components have finished
 goodbyeComponents = []
-goodbyeComponents.append(dplinst2)
 goodbyeComponents.append(backgroundinst8)
 goodbyeComponents.append(goodbye)
 goodbyeComponents.append(goodbyeglow)
@@ -6696,21 +5569,14 @@ goodbyeComponents.append(bye_key_resp)
 for thisComponent in goodbyeComponents:
     if hasattr(thisComponent, 'status'):
         thisComponent.status = NOT_STARTED
-#-------Start Routine "goodbye"-------
 
+#-------Start Routine "goodbye"-------
 continueRoutine = True
 while continueRoutine:
     # get current time
     t = goodbyeClock.getTime()
     frameN = frameN + 1  # number of completed frames (so 0 is the first frame)
     # update/draw components on each frame
-    
-    # *dplinst2* updates
-    if t >= 0.0 and dplinst2.status == NOT_STARTED:
-        # keep track of start time/frame for later
-        dplinst2.tStart = t  # underestimates by a little under one frame
-        dplinst2.frameNStart = frameN  # exact frame index
-        dplinst2.setAutoDraw(True)
     
     # *background* updates
     if t >= 0.0 and backgroundinst8.status == NOT_STARTED:
