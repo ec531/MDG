@@ -4936,9 +4936,16 @@ for thisTrial in trials:
     # Define your advice options
     advice_options = [DA_advice, FAC_advice, MOD_advice, NO_advice]
 
-    # Randomly choose advice
-    random_advice = rng.choice(advice_options)
+    # Calculate the probability for each advice option
+    num_options = len(advice_options)
+    probability = 1.0 / num_options  # Equal probability for each option
 
+    # Create an array of probabilities for the choices
+    probabilities = [probability] * num_options
+
+    # Randomly choose advice
+    random_advice = rng.choice(advice_options, p=probabilities)
+    
     while continueRoutine:
 
         # get current time
