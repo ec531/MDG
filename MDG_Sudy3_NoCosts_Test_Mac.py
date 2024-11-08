@@ -2573,12 +2573,12 @@ for thisTrial in trials:
 
     # keep track of which components have finished
     trialComponents = []
-    trialComponents.append(learningbackground)  # Always include the background
-    trialComponents.append(mouse)  # Always include mouse
-    trialComponents.append(ScoreText)  # Always include ScoreText
-    trialComponents.append(GenImage)  # Always include GENImage
-    trialComponents.append(diagnosis)  # Always include diagnosis
-    trialComponents.append(submit_button)  # Always include submit_button
+    trialComponents.append(learningbackground)
+    trialComponents.append(mouse)
+    trialComponents.append(ScoreText)
+    trialComponents.append(GenImage)
+    trialComponents.append(diagnosis)
+    trialComponents.append(submit_button)
     trialComponents.append(Test1Text)
     trialComponents.append(Test2Text)
     trialComponents.append(Test3Text)
@@ -2612,6 +2612,9 @@ for thisTrial in trials:
     totalclick=0
     testsRemaining = 4
     clickDiagnosis = 0
+    # Initialize `adviceTriggered` at the start of the routine
+    adviceTriggered = False
+    adviceVisible = False
 
     # Initialize the most common and least common click orders
     most_common_click_order_for_genoutcome = None
@@ -2630,61 +2633,23 @@ for thisTrial in trials:
     original_test = None
     advice_name = None
 
-    # Generate advice based on these values
-    if mouse.isPressedIn(diagnosis) and eval(clickDiagnosis) < 2:
-        symptom_name = symptoms_dict[genoutcome_map[GENpics[genoutcome - 1]]]
-        DA_advice = f"THIS IS YOUR AI ADVISOR.\nIs there stronger evidence for any of the other diseases when the patient has had {symptom_name}?"
-        advice_name = 'DA'
-        random_advice = DA_advice
-        advice_names.append(advice_name)
-        # Increment diagnosis click counter
-        clickDiagnosis += 1
-    else:
-        continue
-        #DA_advice += "UNABLE TO PROVIDE ADVICE DUE TO MISSING DATA."
+    # Initialize advice variables with default messages
+    DA_advice = "THIS IS YOUR AI ADVISOR.\nIs there stronger evidence for any of the other diseases when the patient has had a symptom?"
+    FAC_advice = "THIS IS YOUR AI ADVISOR.\nDo we have a majority opinion in the team for which disease it is, given the symptom?"
+    MOD_advice = "THIS IS YOUR AI ADVISOR.\nBefore committing to a disease, are there team members that have anything more to say?"
+    NO_advice = "No specific advice available."
 
-    symptom_name = symptoms_dict[genoutcome_map[GENpics[genoutcome - 1]]]
-    FAC_advice = "THIS IS YOUR AI ADVISOR.\nDo we have a majority opinion in the team for which disease it is, given the {symptom_name}?"
-    if mouse.isPressedIn(testShape):
-        PromptTextAdvice.draw()
-        FAC_advice += f"Do we have a majority opinion in the team for which disease it is, given the {symptom_name} and new test result?"
-        advice_name = 'FAC'
-        random_advice = FAC_advice
-        advice_names.append(advice_name)
-    else:
-        continue
-        #FAC_advice += "UNABLE TO PROVIDE ADVICE DUE TO MISSING DATA."
-
-    MOD_advice = "THIS IS YOUR AI ADVISOR.\n"
-    if mouse.isPressedIn(diagnosis) and eval(clickDiagnosis) < 2:
-        symptom_name = symptoms_dict[genoutcome_map[GENpics[genoutcome - 1]]]
-        MOD_advice = f"THIS IS YOUR AI ADVISOR.\nBefore committing to a disease are there team members that have anything more to say?"
-        advice_name = 'MOD'
-        random_advice = MOD_advice
-        advice_names.append(advice_name)
-    else:
-        continue
-        #MOD_advice += "UNABLE TO PROVIDE ADVICE DUE TO MISSING DATA."  
-
-    NO_advice = ""
-    if NO_advice:
-        advice_name = 'No Advice'
-
-    # Create a random generator
-    rng = np.random.default_rng()      
-
-    # Define your advice options
+    # Define your advice options and corresponding names
     advice_options = [DA_advice, FAC_advice, MOD_advice, NO_advice]
+    advice_names = ['DA', 'FAC', 'MOD', 'No Advice']
 
-    # Calculate the probability for each advice option
-    num_options = len(advice_options)
-    probability = 1.0 / num_options  # Equal probability for each option
+    # Create a random generator and choose one of the advice options randomly
+    rng = np.random.default_rng()
+    selected_index = rng.choice(len(advice_options))  # Randomly choose an index
+    random_advice = advice_options[selected_index]    # Select the advice based on the random index
+    advice_name = advice_names[selected_index]        # Keep track of which advice was chosen
 
-    # Create an array of probabilities for the choices
-    probabilities = [probability] * num_options
-
-    # Randomly choose advice
-    random_advice = rng.choice(advice_options, p=probabilities)
+    print(f"Selected advice: {advice_name}")
     
     while continueRoutine:
 
@@ -2730,6 +2695,40 @@ for thisTrial in trials:
 
         # Update the score text in every frame
         #ScoreText._pygletTextObj.text = f"Costs: ${costs1}"
+    
+        # Check for trigger conditions specific to the chosen advice
+        if not adviceTriggered:
+            if advice_name == 'DA':
+                print("Checking DA advice trigger condition...")
+                if diagnosis.getRating() is not None and clickDiagnosis < 1:  # First click triggers DA advice
+                    adviceTriggered = True
+                    adviceVisible = True  # Show advice on screen
+                    clickDiagnosis += 1
+                    # Customize the DA advice text with specific symptom name
+                    random_advice = f"THIS IS YOUR AI ADVISOR.\nIs there stronger evidence for any of the other diseases when the patient has had {symptom_name}?"
+                    print("DA advice triggered")
+
+            elif advice_name == 'FAC':
+                print("Checking FAC advice trigger condition...")
+                if any(mouse.isPressedIn(shape) for shape in [Test1Shape, Test2Shape, Test3Shape, Test4Shape]):
+                    adviceTriggered = True
+                    adviceVisible = True
+                    # Customize FAC advice text with specific symptom name
+                    random_advice = f"THIS IS YOUR AI ADVISOR.\nDo we have a majority opinion in the team for which disease it is, given the {symptom_name}?"
+                    print("FAC advice triggered")
+
+            elif advice_name == 'MOD':
+                print("Checking MOD advice trigger condition...")
+                if diagnosis.getRating() is not None and clickDiagnosis < 1:  # First click triggers MOD advice
+                    adviceTriggered = True
+                    adviceVisible = True
+                    clickDiagnosis += 1
+                    random_advice = "THIS IS YOUR AI ADVISOR.\nBefore committing to a disease, are there team members that have anything more to say?"
+                    print("MOD advice triggered")
+
+            elif advice_name == 'No Advice':
+                adviceTriggered = True
+                print("No Advice selected; no specific advice to trigger")
 
         # Updates for Test texts (Test1Text, Test2Text, etc.)
         for i, testText in enumerate([Test1Text, Test2Text, Test3Text, Test4Text]):
@@ -2855,18 +2854,23 @@ for thisTrial in trials:
             print(f"Most probable disease state: {CorrResp}")
             SecondResp = None  # No tie, so the second response is not valid
 
-        # AI prompt text updates
-        if t >= 0.0 and GenImage.status == STARTED:
-            PromptTextAdvice.text = random_advice
-            PromptTextAdvice.draw()
+        # Toggle advice visibility based on clicks
+        if adviceTriggered and adviceVisible and mouse.getPressed()[0]:  # Any subsequent click hides advice
+            adviceVisible = False  # Hide advice on next click
+            print("Advice hidden on subsequent click")
+
+        # Display or hide advice based on visibility state
+        if adviceVisible:
+            PromptTextAdvice.text = random_advice  # Set the advice text
+            PromptTextAdvice.setAutoDraw(True)     # Show advice text
+        else:
+            PromptTextAdvice.setAutoDraw(False)    # Hide advice text
 
         # Check for response and button click
-        if diagnosis.getRating() is not None:  # If a rating has been made
-            if mouse.isPressedIn(submit_button):  # And submit button is clicked
-                # Record response and reaction time
+        if diagnosis.getRating() is not None and mouse.isPressedIn(submit_button):
                 diagnosis.response = diagnosis.getRating()
                 diagnosis.rt = diagnosis.getRT()
-                continueRoutine = False  # End routine
+                continueRoutine = False
 
         # Check if all components have finished
         if not continueRoutine:
